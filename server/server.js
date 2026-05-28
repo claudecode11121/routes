@@ -24,9 +24,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5000",
-  "https://consignment-site.vercel.app",
-  "https://rapidroutesltd.com",
-  "https://www.rapidroutesltd.com",
+  "https://rapidroutes-five.vercel.app",
 ];
 
 app.use(
