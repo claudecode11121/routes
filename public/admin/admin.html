@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Admin Panel - Parcel Tracking</title>
   <style>
     :root {
@@ -28,12 +28,15 @@
 
     * {
       box-sizing: border-box;
+      min-width: 0; /* Prevents flex/grid blowouts */
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       min-height: 100%;
+      width: 100%;
+      overflow-x: hidden; /* Hard stop on horizontal scrolling */
       font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       color: var(--text);
       background:
@@ -63,6 +66,7 @@
       letter-spacing: 0.04em;
       font-weight: 600;
       color: #f3f4f6;
+      white-space: nowrap;
     }
 
     header .status-chip {
@@ -73,6 +77,7 @@
       background: rgba(34, 197, 94, 0.11);
       font-size: 12px;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     header .logout-link {
@@ -82,6 +87,7 @@
       font-weight: 500;
       cursor: pointer;
       transition: color 0.18s ease;
+      white-space: nowrap;
     }
 
     header .logout-link:hover {
@@ -91,13 +97,14 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
     }
 
     .layout {
       display: grid;
       grid-template-columns: 240px minmax(0, 1fr);
       min-height: calc(100vh - 62px);
+      width: 100%;
     }
 
     aside {
@@ -135,28 +142,32 @@
     }
 
     main {
-      padding: 22px;
-      overflow: auto;
+      padding: 24px;
+      width: 100%;
+      max-width: 100vw;
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1200px;
       margin: 0 auto;
-      display: grid;
-      gap: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
     }
 
     .card {
       background: linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.92));
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 28px;
       box-shadow: var(--shadow);
+      width: 100%;
     }
 
     h2 {
-      margin: 0 0 14px;
-      font-size: 17px;
+      margin: 0 0 18px;
+      font-size: 18px;
       font-weight: 600;
       color: #f8fafc;
       letter-spacing: 0.01em;
@@ -177,7 +188,7 @@
     }
 
     #loginSection .card {
-      width: min(440px, 100%);
+      width: min(400px, 100%);
       border: 1px solid rgba(96, 165, 250, 0.32);
       background:
         linear-gradient(145deg, rgba(17, 24, 39, 0.84), rgba(17, 24, 39, 0.56)),
@@ -188,17 +199,20 @@
         0 24px 60px rgba(6, 12, 28, 0.62),
         0 0 0 1px rgba(34, 197, 94, 0.18),
         0 0 80px rgba(37, 99, 235, 0.24);
+      padding: 32px;
     }
 
     #loginSection h2 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       font-size: 22px;
     }
 
     form {
-      display: grid;
-      gap: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
     }
 
     fieldset {
@@ -208,12 +222,13 @@
       min-width: 0;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      gap: 16px;
+      width: 100%;
     }
 
     fieldset legend {
       padding: 0;
-      margin: 0 0 2px;
+      margin: 0 0 6px;
       grid-column: 1 / -1;
       color: #d1d5db;
       font-size: 12px;
@@ -222,18 +237,14 @@
       font-weight: 600;
     }
 
-    input,
-    select,
-    button,
-    textarea {
+    input, select, button, textarea {
       font: inherit;
     }
 
-    input,
-    select {
+    input, select {
       width: 100%;
-      min-height: 42px;
-      padding: 10px 12px;
+      min-height: 44px;
+      padding: 10px 14px;
       border-radius: 10px;
       border: 1px solid rgba(148, 163, 184, 0.34);
       background: rgba(15, 23, 42, 0.8);
@@ -242,17 +253,15 @@
     }
 
     input::placeholder {
-      color: #94a3b8;
+      color: #64748b;
     }
 
-    input:hover,
-    select:hover {
+    input:hover, select:hover {
       border-color: rgba(96, 165, 250, 0.6);
       background: rgba(15, 23, 42, 0.93);
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: #60a5fa;
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.24);
@@ -262,11 +271,15 @@
     button {
       border: 1px solid transparent;
       border-radius: 10px;
-      min-height: 40px;
-      padding: 10px 14px;
+      min-height: 44px;
+      padding: 10px 18px;
       font-weight: 600;
       cursor: pointer;
       transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
     }
 
     button:active {
@@ -276,6 +289,8 @@
     .btn-primary {
       color: #f9fafb;
       background: linear-gradient(180deg, #2563eb, #1d4ed8);
+      width: 100%;
+      max-width: 280px;
     }
 
     .btn-primary:hover {
@@ -311,51 +326,44 @@
       box-shadow: 0 4px 12px rgba(220, 38, 38, 0.18);
     }
 
-    form button[type="submit"] {
-      justify-self: start;
-      min-width: 230px;
-    }
-
-    .itemRow,
-    .linkItemRow {
+    .itemRow, .linkItemRow {
       grid-column: 1 / -1;
       display: flex;
+      flex-wrap: nowrap;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       margin-bottom: 12px;
-      padding: 12px;
+      padding: 16px;
       border-radius: 10px;
       border: 1px solid rgba(148, 163, 184, 0.25);
       background: rgba(15, 23, 42, 0.45);
+      width: 100%;
     }
 
-    .itemRow input,
-    .itemRow select,
-    .itemRow button,
-    .linkItemRow input,
-    .linkItemRow select,
-    .linkItemRow button {
-      min-height: 36px;
-      flex: 1;
-      padding: 8px 10px;
+    .itemRow input, .itemRow select, .linkItemRow input, .linkItemRow select {
+      flex: 1 1 0%;
+      min-width: 0;
     }
 
-    .itemRow button,
-    .linkItemRow button {
+    .itemRow button, .linkItemRow button {
       flex: 0 0 auto;
-      min-width: 70px;
     }
 
     #generatedLinkBox {
-      margin-top: 14px;
-      padding: 14px;
+      margin-top: 20px;
+      padding: 16px;
       border-radius: 10px;
       border: 1px dashed rgba(96, 165, 250, 0.5);
       background: rgba(30, 64, 175, 0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .table-wrapper {
-      overflow: auto;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       border-radius: 10px;
       border: 1px solid rgba(148, 163, 184, 0.22);
       background: rgba(15, 23, 42, 0.55);
@@ -367,41 +375,36 @@
       border-spacing: 0;
       color: #e2e8f0;
       font-size: 13px;
+      white-space: nowrap; /* Forces table not to squish */
     }
 
-    th,
-    td {
+    th, td {
       text-align: left;
-      padding: 11px 12px;
+      padding: 14px 16px;
       border-bottom: 1px solid rgba(148, 163, 184, 0.13);
-      vertical-align: top;
+      vertical-align: middle;
     }
 
     thead th {
-      position: sticky;
-      top: 0;
-      z-index: 2;
       background: rgba(17, 24, 39, 0.95);
       color: #cbd5e1;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
     }
 
     tbody tr {
-      transition: background 0.18s ease, transform 0.12s ease;
+      transition: background 0.18s ease;
     }
 
     tbody tr:hover {
-      transform: translateY(-1px);
       background: rgba(37, 99, 235, 0.12);
     }
 
     .status-pill {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       min-height: 28px;
       padding: 5px 12px;
       border-radius: 999px;
@@ -409,7 +412,6 @@
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.01em;
-      white-space: nowrap;
     }
 
     .status-pill.pending {
@@ -418,8 +420,7 @@
       border-color: rgba(245, 158, 11, 0.45);
     }
 
-    .status-pill.in-transit,
-    .status-pill.out-for-delivery {
+    .status-pill.in-transit, .status-pill.out-for-delivery {
       color: #93c5fd;
       background: var(--primary-soft);
       border-color: rgba(59, 130, 246, 0.44);
@@ -436,70 +437,91 @@
       border-radius: 999px;
       border-color: rgba(148, 163, 184, 0.45);
       background: rgba(15, 23, 42, 0.85);
-      padding: 6px 30px 6px 10px;
+      padding: 6px 30px 6px 14px;
       font-size: 12px;
       font-weight: 600;
       width: auto;
-      min-width: 138px;
-    }
-
-    .generated-link-title {
-      margin-top: 0;
     }
 
     .hidden {
       display: none !important;
     }
 
-    @media (max-width: 1120px) {
-      .itemRow,
-      .linkItemRow {
-        flex-wrap: wrap;
-      }
-
-      .itemRow input,
-      .itemRow select,
-      .linkItemRow input,
-      .linkItemRow select {
-        flex: 0 1 calc(50% - 4px);
-      }
-    }
-
-    @media (max-width: 900px) {
+    /* Tablet and Mobile Breakpoints */
+    @media (max-width: 992px) {
       .layout {
         grid-template-columns: 1fr;
       }
-
+      
       aside {
-        border-right: 0;
+        border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: 16px 10px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
       }
 
       .sidebar-title {
-        margin-bottom: 10px;
+        display: none;
       }
 
       .nav-item {
         display: inline-block;
+        margin: 0 8px 0 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 0 16px;
+      }
+      
+      main {
+        padding: 16px;
+      }
+
+      .card {
+        padding: 20px;
       }
 
       fieldset {
         grid-template-columns: 1fr;
+        gap: 12px;
       }
 
-      form button[type="submit"] {
+      .btn-primary {
+        max-width: 100%;
+      }
+
+      /* Stack the item row inputs on mobile so they don't squish */
+      .itemRow, .linkItemRow {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+        gap: 10px;
+      }
+      
+      .itemRow button, .linkItemRow button {
         width: 100%;
+        margin-top: 4px;
       }
     }
 
-    @media (max-width: 620px) {
-      main {
-        padding: 14px;
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 14px;
       }
-
+      header .status-chip {
+        display: none; /* Hide chip on very small screens to save space */
+      }
       .card {
-        padding: 14px;
+        padding: 16px;
+      }
+      h2 {
+        font-size: 16px;
       }
     }
   </style>
@@ -516,10 +538,12 @@
   <section id="loginSection">
     <div class="card">
       <h2>Admin Sign In</h2>
-      <input type="text" id="adminUser" placeholder="Username">
-      <input type="password" id="adminPass" placeholder="Password">
-      <button class="btn-primary" onclick="loginAdmin()">Sign In to Dashboard</button>
-      <p id="loginError" class="error"></p>
+      <form onsubmit="event.preventDefault(); loginAdmin();">
+        <input type="text" id="adminUser" placeholder="Username" required>
+        <input type="password" id="adminPass" placeholder="Password" required>
+        <button type="submit" class="btn-primary" style="max-width: 100%;">Sign In to Dashboard</button>
+        <p id="loginError" class="error"></p>
+      </form>
     </div>
   </section>
 
@@ -531,144 +555,146 @@
         <a class="nav-item" href="#" onclick="return false">Shipments</a>
         <a class="nav-item" href="#" onclick="return false">Settings</a>
       </aside>
-      <main class="container">
+      <main>
+        <div class="container">
 
-        <div class="card">
-          <h2>Pending Shipment Approvals</h2>
-          <div class="table-wrapper">
-            <table id="pendingTable">
-              <thead>
-                <tr>
-                  <th>Temp ID</th>
-                  <th>Sender</th>
-                  <th>Receiver</th>
-                  <th>Item</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+          <div class="card">
+            <h2>Pending Shipment Approvals</h2>
+            <div class="table-wrapper">
+              <table id="pendingTable">
+                <thead>
+                  <tr>
+                    <th>Temp ID</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Item</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        <div class="card">
-          <h2>Create Direct Tracking Entry</h2>
-          <form id="createForm" onsubmit="createTracking(event)">
-            <fieldset>
-              <legend>Sender Information</legend>
-              <input type="text" id="senderName" placeholder="Sender Name" required>
-              <input type="text" id="senderAddress" placeholder="Sender Address">
-              <input type="tel" id="senderPhone" placeholder="Sender Phone">
-              <input type="email" id="senderEmail" placeholder="Sender Email">
-            </fieldset>
+          <div class="card">
+            <h2>Create Direct Tracking Entry</h2>
+            <form id="createForm" onsubmit="createTracking(event)">
+              <fieldset>
+                <legend>Sender Information</legend>
+                <input type="text" id="senderName" placeholder="Sender Name" required>
+                <input type="text" id="senderAddress" placeholder="Sender Address">
+                <input type="tel" id="senderPhone" placeholder="Sender Phone">
+                <input type="email" id="senderEmail" placeholder="Sender Email">
+              </fieldset>
 
-            <fieldset>
-              <legend>Receiver Information</legend>
-              <input type="text" id="receiverName" placeholder="Receiver Name" required>
-              <input type="text" id="receiverAddress" placeholder="Receiver Address">
-              <input type="tel" id="receiverPhone" placeholder="Receiver Phone">
-              <input type="text" id="receiverOffice" placeholder="Destination Office">
-              <input type="email" id="receiverEmail" placeholder="Receiver Email">
-            </fieldset>
+              <fieldset>
+                <legend>Receiver Information</legend>
+                <input type="text" id="receiverName" placeholder="Receiver Name" required>
+                <input type="text" id="receiverAddress" placeholder="Receiver Address">
+                <input type="tel" id="receiverPhone" placeholder="Receiver Phone">
+                <input type="text" id="receiverOffice" placeholder="Destination Office">
+                <input type="email" id="receiverEmail" placeholder="Receiver Email">
+              </fieldset>
 
-            <fieldset>
-              <legend>Route Information & Status</legend>
-              <input type="text" id="origin" placeholder="Origin" required>
-              <input type="text" id="destination" placeholder="Destination" required>
-              <input type="text" id="currentLocation" placeholder="Current Location" required>
-              <input type="date" id="expectedDelivery" required>
-              <select id="status" required>
-                <option value="Pending">Pending</option>
-                <option value="In Transit">In Transit</option>
-                <option value="Out for Delivery">Out for Delivery</option>
-                <option value="Delivered">Delivered</option>
-              </select>
-            </fieldset>
+              <fieldset>
+                <legend>Route Information & Status</legend>
+                <input type="text" id="origin" placeholder="Origin" required>
+                <input type="text" id="destination" placeholder="Destination" required>
+                <input type="text" id="currentLocation" placeholder="Current Location" required>
+                <input type="date" id="expectedDelivery" required>
+                <select id="status" required>
+                  <option value="Pending">Pending</option>
+                  <option value="In Transit">In Transit</option>
+                  <option value="Out for Delivery">Out for Delivery</option>
+                  <option value="Delivered">Delivered</option>
+                </select>
+              </fieldset>
 
-            <fieldset id="itemsFieldset">
-              <legend>Item Information</legend>
-              <div class="itemRow">
-                <input type="text" name="itemId" placeholder="Unique Item ID" required>
-                <input type="text" name="itemName" placeholder="Item Name (e.g. Laptop)" required>
-                <input type="text" name="itemDescription" placeholder="Description">
-                <input type="number" name="itemWeight" step="0.01" placeholder="Weight (kg)">
-                <input type="number" name="itemQuantity" value="1" min="1">
-                <input type="number" name="itemCost" step="0.01" placeholder="Cost ($)" required>
-                <button type="button" class="btn-danger" onclick="removeItem(this)">Remove</button>
-              </div>
-              <button type="button" class="btn-secondary" id="addItemBtn" onclick="addItem()">+ Add Item</button>
-            </fieldset>
-            
-            <button type="submit" class="btn-primary">Create Official Tracking</button>
-          </form>
-        </div>
-        
-        <div class="card">
-          <h2>Generate Shipment Form Link</h2>
-          <form id="shipmentLinkForm" onsubmit="createShipmentLink(event)">
-            <fieldset>
-              <legend>Sender Details</legend>
-              <input type="text" id="linkSenderName" placeholder="Sender Name" required>
-              <input type="text" id="linkSenderEmail" placeholder="Sender Email">
-              <input type="text" id="linkSenderPhone" placeholder="Sender Phone">
-              <input type="text" id="linkSenderAddress" placeholder="Sender Address">
-            </fieldset>
-
-            <fieldset>
-              <legend>Route Details</legend>
-              <input type="text" id="linkOrigin" placeholder="Origin" required>
-              <input type="text" id="linkDestination" placeholder="Destination" required>
-            </fieldset>
-
-            <fieldset id="linkItemsFieldset">
-              <legend>Package Items</legend>
-              <div class="linkItemRow">
-                <input type="text" name="linkItemId" placeholder="Unique Item ID" required>
-                <input type="text" name="linkItemName" placeholder="Item Name (e.g. Laptop)" required>
-                <input type="text" name="linkItemDesc" placeholder="Description">
-                <input type="number" name="linkItemWeight" placeholder="Weight (kg)">
-                <input type="number" name="linkItemQuantity" placeholder="Quantity" value="1" min="1">
-                <input type="number" name="linkItemCost" placeholder="Cost ($)" required>
-                <button type="button" class="btn-danger" onclick="removeLinkItem(this)">Remove</button>
-              </div>
-              <button type="button" class="btn-secondary" id="addLinkItemBtn" onclick="addLinkItem()">+ Add Item</button>
-            </fieldset>
-
-            <button type="submit" class="btn-primary">Generate Custom Link</button>
-          </form>
-
-          <div id="generatedLinkBox" class="hidden">
-            <p class="generated-link-title"><strong>Share this secure link with the receiver:</strong></p>
-            <input type="text" id="generatedLink" readonly>
-            <button class="btn-primary" onclick="copyGeneratedLink()">Copy to Clipboard</button>
+              <fieldset id="itemsFieldset">
+                <legend>Item Information</legend>
+                <div class="itemRow">
+                  <input type="text" name="itemId" placeholder="Unique Item ID" required>
+                  <input type="text" name="itemName" placeholder="Item Name (e.g. Laptop)" required>
+                  <input type="text" name="itemDescription" placeholder="Description">
+                  <input type="number" name="itemWeight" step="0.01" placeholder="Weight (kg)">
+                  <input type="number" name="itemQuantity" value="1" min="1">
+                  <input type="number" name="itemCost" step="0.01" placeholder="Cost ($)" required>
+                  <button type="button" class="btn-danger" onclick="removeItem(this)">Remove</button>
+                </div>
+                <button type="button" class="btn-secondary" id="addItemBtn" onclick="addItem()">+ Add Item</button>
+              </fieldset>
+              
+              <button type="submit" class="btn-primary">Create Official Tracking</button>
+            </form>
           </div>
-        </div>
+          
+          <div class="card">
+            <h2>Generate Shipment Form Link</h2>
+            <form id="shipmentLinkForm" onsubmit="createShipmentLink(event)">
+              <fieldset>
+                <legend>Sender Details</legend>
+                <input type="text" id="linkSenderName" placeholder="Sender Name" required>
+                <input type="email" id="linkSenderEmail" placeholder="Sender Email">
+                <input type="tel" id="linkSenderPhone" placeholder="Sender Phone">
+                <input type="text" id="linkSenderAddress" placeholder="Sender Address">
+              </fieldset>
 
-        <div class="card">
-          <h2>Active Tracking Database</h2>
-          <div class="table-wrapper">
-            <table id="trackingTable">
-              <thead>
-                <tr>
-                  <th>Tracking #</th>
-                  <th>Sender</th>
-                  <th>Receiver</th>
-                  <th>Origin</th>
-                  <th>Destination</th>
-                  <th>Location</th>
-                  <th>Status</th>
-                  <th>Delivery Date</th>
-                  <th>Created</th>
-                  <th>Items</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+              <fieldset>
+                <legend>Route Details</legend>
+                <input type="text" id="linkOrigin" placeholder="Origin" required>
+                <input type="text" id="linkDestination" placeholder="Destination" required>
+              </fieldset>
+
+              <fieldset id="linkItemsFieldset">
+                <legend>Package Items</legend>
+                <div class="linkItemRow">
+                  <input type="text" name="linkItemId" placeholder="Unique Item ID" required>
+                  <input type="text" name="linkItemName" placeholder="Item Name" required>
+                  <input type="text" name="linkItemDesc" placeholder="Description">
+                  <input type="number" name="linkItemWeight" step="0.01" placeholder="Weight (kg)">
+                  <input type="number" name="linkItemQuantity" placeholder="Quantity" value="1" min="1">
+                  <input type="number" name="linkItemCost" step="0.01" placeholder="Cost ($)" required>
+                  <button type="button" class="btn-danger" onclick="removeLinkItem(this)">Remove</button>
+                </div>
+                <button type="button" class="btn-secondary" id="addLinkItemBtn" onclick="addLinkItem()">+ Add Item</button>
+              </fieldset>
+
+              <button type="submit" class="btn-primary">Generate Custom Link</button>
+            </form>
+
+            <div id="generatedLinkBox" class="hidden">
+              <p style="margin-top: 0; margin-bottom: 4px;"><strong>Share this secure link with the receiver:</strong></p>
+              <input type="text" id="generatedLink" readonly>
+              <button class="btn-primary" onclick="copyGeneratedLink()">Copy to Clipboard</button>
+            </div>
           </div>
-        </div>
 
+          <div class="card">
+            <h2>Active Tracking Database</h2>
+            <div class="table-wrapper">
+              <table id="trackingTable">
+                <thead>
+                  <tr>
+                    <th>Tracking #</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Delivery Date</th>
+                    <th>Created</th>
+                    <th>Items</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
       </main>
     </div>
   </section>
