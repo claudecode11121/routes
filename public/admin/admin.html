@@ -5,298 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - Parcel Tracking</title>
   <style>
-    /* ========== MODERN CSS RESET & VARIABLES ========== */
-    :root {
-      --bg-color: #f1f5f9;
-      --card-bg: #ffffff;
-      --text-dark: #0f172a;
-      --text-main: #334155;
-      --text-muted: #64748b;
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --border-color: #e2e8f0;
-      --input-bg: #f8fafc;
-      --danger: #ef4444;
-      --danger-hover: #dc2626;
-      --success: #10b981;
-      --success-hover: #059669;
+    /* GitHub-like Admin UI (simplified) */
+    :root{
+      --gh-bg:#0d1117;
+      --gh-muted:#adbac7;
+      --gh-text:#c9d1d9;
+      --gh-surface:#0f1720;
+      --gh-card:#0b1220;
+      --gh-border:rgba(110,118,125,0.2);
+      --gh-accent:#0366d6;
+      --gh-radius:8px;
     }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg-color);
-      color: var(--text-main);
-      margin: 0;
-      padding: 0;
-      line-height: 1.5;
-    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial}
+    body{background:linear-gradient(180deg,#0b1220 0%, #05070a 100%);color:var(--gh-text)}
 
-    /* ========== HEADER ========== */
-    header {
-      background: var(--card-bg);
-      padding: 16px 32px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
+    /* Top nav */
+    header{height:56px;background:var(--gh-bg);display:flex;align-items:center;padding:0 16px;border-bottom:1px solid rgba(255,255,255,0.04)}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand .logo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#2ea44f,#28a745);display:inline-block}
+    .brand h1{font-size:16px;margin:0;color:var(--gh-text);font-weight:600}
 
-    header h1 {
-      margin: 0;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-dark);
-      letter-spacing: -0.025em;
-    }
+    /* Layout: sidebar + content */
+    .layout{display:flex;min-height:calc(100vh - 56px)}
+    aside{width:220px;background:#0b1220;border-right:1px solid rgba(255,255,255,0.03);padding:20px}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;color:var(--gh-muted);text-decoration:none;font-size:14px;margin-bottom:6px}
+    .nav-item:hover{background:rgba(255,255,255,0.02);color:var(--gh-text)}
 
-    /* ========== SECTIONS & CARDS ========== */
-    section {
-      max-width: 1200px;
-      margin: 32px auto;
-      padding: 0 20px;
-    }
+    main{flex:1;padding:24px;overflow:auto}
+    .container{max-width:1200px;margin:0 auto}
 
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-    }
+    /* Card style */
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid var(--gh-border);padding:20px;border-radius:var(--gh-radius);box-shadow:0 6px 12px rgba(2,6,23,0.6);}
+    h2{color:var(--gh-text);margin-top:0}
 
-    h2 {
-      margin-top: 0;
-      margin-bottom: 20px;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-dark);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    /* Login */
+    #loginSection{max-width:420px;margin:80px auto;text-align:left}
+    #loginSection .card{padding:28px}
+    label{font-size:12px;color:var(--gh-muted);display:block;margin-bottom:6px}
+    input{width:100%;padding:10px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--gh-text);margin-bottom:12px}
+    button{background:var(--gh-accent);color:white;border:none;padding:10px 14px;border-radius:6px;cursor:pointer}
 
-    /* ========== FORM STYLES ========== */
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
+    /* Tables */
+    .table-wrapper{overflow:auto;margin-top:8px}
+    table{width:100%;border-collapse:collapse;color:var(--gh-text);font-size:14px}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
+    th{color:var(--gh-muted);font-size:12px}
 
-    fieldset {
-      border: none;
-      border-top: 1px solid var(--border-color);
-      padding: 20px 0 0 0;
-      margin: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-    }
-
-    /* Remove top border from first fieldset */
-    fieldset:first-of-type {
-      border-top: none;
-      padding-top: 0;
-    }
-
-    legend {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0;
-      margin-bottom: 12px;
-    }
-
-    input, select {
-      padding: 10px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 0.875rem;
-      width: 100%;
-      background-color: var(--input-bg);
-      color: var(--text-dark);
-      box-sizing: border-box;
-      transition: all 0.2s ease;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-      background-color: #fff;
-    }
-
-    input::placeholder {
-      color: #94a3b8;
-    }
-
-    /* ========== BUTTONS ========== */
-    button {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.1s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    button:hover {
-      background: var(--primary-hover);
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    button[type="submit"] {
-      padding: 12px 24px;
-      font-size: 1rem;
-      margin-top: 10px;
-    }
-
-    #addItemBtn, #addLinkItemBtn {
-      background: var(--success);
-      grid-column: 1 / -1; /* Make it span full width of the grid */
-      max-width: 200px;
-    }
-
-    #addItemBtn:hover, #addLinkItemBtn:hover {
-      background: var(--success-hover);
-    }
-
-    /* Table Action Buttons */
-    td button {
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      border-radius: 6px;
-      margin-right: 4px;
-      margin-bottom: 4px;
-    }
-
-    td button:last-child {
-      background: var(--text-muted);
-    }
-    
-    td button:last-child:hover {
-      background: var(--danger);
-    }
-
-    /* Item Row Layout */
-    .itemRow, .linkItemRow {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      grid-column: 1 / -1;
-      background: var(--bg-color);
-      padding: 16px;
-      border-radius: 8px;
-      border: 1px dashed var(--border-color);
-    }
-
-    .itemRow button, .linkItemRow button {
-      background: white;
-      color: var(--danger);
-      border: 1px solid var(--danger);
-    }
-
-    .itemRow button:hover, .linkItemRow button:hover {
-      background: var(--danger);
-      color: white;
-    }
-
-    /* ========== TABLES ========== */
-    .table-wrapper {
-      overflow-x: auto;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      background: #fff;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 900px;
-    }
-
-    th, td {
-      padding: 14px 16px;
-      text-align: left;
-      font-size: 0.875rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    th {
-      background: var(--input-bg);
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover {
-      background-color: var(--input-bg);
-    }
-
-    td select {
-      padding: 6px 10px;
-      font-size: 0.8rem;
-    }
-
-    /* ========== UTILITIES & LOGIN ========== */
-    .hidden {
-      display: none !important;
-    }
-
-    #loginSection {
-      max-width: 400px;
-      margin: 80px auto;
-      text-align: center;
-    }
-
-    #loginSection input {
-      margin-bottom: 16px;
-    }
-
-    .error {
-      color: var(--danger);
-      font-size: 0.875rem;
-      margin-top: 12px;
-    }
-
-    #generatedLinkBox {
-      margin-top: 16px;
-      background: var(--success);
-      color: white;
-      padding: 16px;
-      border-radius: 8px;
-    }
-
-    #generatedLinkBox input {
-      margin-bottom: 12px;
-      color: var(--text-dark);
-    }
-
-    /* Modal Animation */
-    @keyframes fadeIn {
-      from { opacity: 0; backdrop-filter: blur(0px); }
-      to { opacity: 1; backdrop-filter: blur(4px); }
-    }
-    div[style*="rgba(0,0,0,0.6)"] {
-      animation: fadeIn 0.2s ease-out forwards;
-    }
+    /* Responsive */
+    @media(max-width:800px){aside{display:none}.layout{flex-direction:column}}
   </style>
 </head>
 <body>
