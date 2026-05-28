@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Receiver Details | RapidRoutes</title>
+  <title>Receiver Details | ConsignTrack</title>
   <style>
     :root {
-      --bg: #090d14;
-      --bg-elevated: #111827;
-      --text: #e5e7eb;
-      --text-muted: #9ca3af;
-      --primary: #2563eb;
-      --primary-soft: rgba(37, 99, 235, 0.18);
-      --accent: #22c55e;
-      --accent-soft: rgba(34, 197, 94, 0.2);
-      --warning: #f59e0b;
-      --border: rgba(148, 163, 184, 0.22);
-      --shadow: 0 24px 60px rgba(3, 8, 20, 0.55);
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --surface-soft: #f8f9fa;
+      --text: #333333;
+      --text-muted: #555555;
+      --primary: #d84659;
+      --primary-dark: #970808;
+      --primary-soft: rgba(216, 70, 89, 0.12);
+      --accent: #1d173c;
+      --accent-soft: rgba(29, 23, 60, 0.1);
+      --warning: #e63946;
+      --border: rgba(29, 23, 60, 0.14);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
       --radius: 12px;
     }
 
@@ -26,50 +28,33 @@
       min-height: 100%;
       font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       color: var(--text);
-      background: linear-gradient(180deg, #0b1220 0%, var(--bg) 56%);
+      background: var(--bg);
     }
 
-    /* ===== Header ===== */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      height: 62px;
+    .navbar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 22px;
-      border-bottom: 1px solid var(--border);
-      -webkit-backdrop-filter: blur(14px);
-      backdrop-filter: blur(14px);
-      background: rgba(9, 13, 20, 0.82);
+      justify-content: flex-start;
+      background: #1d173c;
+      padding: 15px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 15px;
-      letter-spacing: 0.04em;
-      font-weight: 600;
-      color: #f3f4f6;
-    }
-
-    header .security-badge {
-      padding: 6px 10px;
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-radius: 999px;
-      color: #86efac;
-      background: rgba(34, 197, 94, 0.11);
-      font-size: 12px;
-      font-weight: 600;
+    .logo {
+      width: 180px;
+      height: auto;
     }
 
     /* ===== Main Content ===== */
     main {
-      padding: 28px 16px;
+      padding: 36px 16px;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: calc(100vh - 62px - 140px);
+      min-height: calc(100vh - 92px - 140px);
     }
 
     .page-container {
@@ -128,7 +113,7 @@
 
     /* ===== Shipment Context Card ===== */
     .shipment-context {
-      background: linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.92));
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 18px;
@@ -164,7 +149,7 @@
 
     /* ===== Form Card ===== */
     .form-card {
-      background: linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.92));
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 24px;
@@ -179,7 +164,7 @@
       margin: 0 0 8px;
       font-size: 20px;
       font-weight: 600;
-      color: #f8fafc;
+      color: var(--accent);
       letter-spacing: 0.01em;
     }
 
@@ -199,7 +184,7 @@
       margin-bottom: 6px;
       font-weight: 500;
       font-size: 13px;
-      color: #d1d5db;
+      color: var(--text-muted);
       letter-spacing: 0.01em;
       text-transform: uppercase;
     }
@@ -209,38 +194,38 @@
       min-height: 42px;
       padding: 10px 12px;
       border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.34);
-      background: rgba(15, 23, 42, 0.8);
-      color: #f1f5f9;
+      border: 1px solid rgba(29, 23, 60, 0.18);
+      background: #fff;
+      color: var(--text);
       font-size: 14px;
       transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
     }
 
     .form-group input::placeholder {
-      color: #94a3b8;
+      color: #888;
     }
 
     .form-group input:hover, .form-group select:hover {
-      border-color: rgba(96, 165, 250, 0.6);
-      background: rgba(15, 23, 42, 0.93);
+      border-color: rgba(216, 70, 89, 0.5);
+      background: #fff;
     }
 
     .form-group input:focus, .form-group select:focus {
       outline: none;
-      border-color: #60a5fa;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.24);
-      background: rgba(15, 23, 42, 0.98);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(216, 70, 89, 0.14);
+      background: #fff;
     }
 
     .form-group.error input {
-      border-color: #dc2626;
-      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.18);
+      border-color: var(--warning);
+      box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.14);
     }
 
     .error-message {
       margin-top: 4px;
       font-size: 12px;
-      color: #fca5a5;
+      color: #b91c1c;
       display: none;
     }
 
@@ -254,7 +239,7 @@
       min-height: 44px;
       padding: 12px 16px;
       background: var(--primary);
-      color: #f9fafb;
+      color: #fff;
       border: none;
       border-radius: 10px;
       font-size: 14px;
@@ -266,7 +251,7 @@
 
     button[type="submit"]:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 10px 18px rgba(37, 99, 235, 0.32);
+      box-shadow: 0 10px 18px rgba(216, 70, 89, 0.26);
       filter: brightness(1.04);
     }
 
@@ -279,7 +264,7 @@
       display: none;
       width: 20px;
       height: 20px;
-      border: 2px solid rgba(148, 163, 184, 0.3);
+      border: 2px solid rgba(29, 23, 60, 0.16);
       border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
@@ -306,7 +291,7 @@
       border-radius: var(--radius);
       max-width: 420px;
       width: 90%;
-      background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(15, 23, 42, 0.98));
+      background: #fff;
       border: 1px solid var(--border);
       animation: popIn 0.4s ease;
       box-shadow: var(--shadow);
@@ -314,7 +299,7 @@
     }
 
     dialog::backdrop {
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(29, 23, 60, 0.35);
       -webkit-backdrop-filter: blur(6px);
       backdrop-filter: blur(6px);
     }
@@ -330,12 +315,12 @@
       margin: 0 auto 20px;
     }
 
-    .circle-bg { fill: none; stroke: rgba(148, 163, 184, 0.3); stroke-width: 6; }
-    .circle-progress { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 339.29; stroke-dashoffset: 339.29; animation: drawCircle 1s ease-out forwards; }
-    .checkmark { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: drawCheck 0.5s ease-out 1s forwards; }
+    .circle-bg { fill: none; stroke: rgba(29, 23, 60, 0.16); stroke-width: 6; }
+    .circle-progress { fill: none; stroke: var(--primary); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 339.29; stroke-dashoffset: 339.29; animation: drawCircle 1s ease-out forwards; }
+    .checkmark { fill: none; stroke: var(--primary); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: drawCheck 0.5s ease-out 1s forwards; }
 
     .dialog-title {
-      color: var(--accent);
+      color: var(--primary);
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 12px;
@@ -349,8 +334,8 @@
     }
 
     .dialog-summary {
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
+      background: rgba(216, 70, 89, 0.08);
+      border: 1px solid rgba(216, 70, 89, 0.18);
       border-radius: 8px;
       padding: 12px;
       margin-bottom: 20px;
@@ -366,7 +351,7 @@
     }
 
     .dialog-summary-item strong {
-      color: var(--accent);
+      color: var(--primary);
       font-weight: 600;
     }
 
@@ -393,12 +378,12 @@
     }
 
     .btn-telegram {
-      background: #0088cc;
+      background: #1d173c;
       color: #fff;
     }
 
     .btn-telegram:hover {
-      background: #006ea8;
+      background: #2b2357;
     }
 
     .btn-email {
@@ -407,7 +392,7 @@
     }
 
     .btn-email:hover {
-      background: #1d4ed8;
+      background: var(--primary-dark);
     }
 
     @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -416,33 +401,33 @@
 
     /* ===== Footer ===== */
     footer {
-      background: rgba(9, 13, 20, 0.82);
+      background: #1d173c;
       border-top: 1px solid var(--border);
       padding: 20px;
       text-align: center;
       font-size: 12px;
-      color: var(--text-muted);
+      color: #c9c9d9;
     }
 
     footer a {
-      color: var(--primary);
+      color: #c9c9d9;
       text-decoration: none;
       margin: 0 8px;
       transition: color 0.18s ease;
     }
 
     footer a:hover {
-      color: #60a5fa;
+      color: #fff;
     }
 
     /* ===== Responsive ===== */
     /* ===== Utility Classes ===== */
-    .progress-arrow {
-      color: var(--border);
-    }
-
     .required-star {
       color: var(--primary);
+    }
+
+    .progress-arrow {
+      color: #b4b4c6;
     }
 
     .context-hidden {
@@ -450,9 +435,9 @@
     }
 
     @media (max-width: 640px) {
-      header h1 { font-size: 14px; }
-      header .security-badge { font-size: 11px; }
-      main { padding: 16px; min-height: calc(100vh - 62px - 100px); }
+      .navbar { padding: 12px 16px; }
+      .logo { width: 140px; }
+      main { padding: 16px; min-height: calc(100vh - 72px - 100px); }
       .form-card { padding: 16px; }
       .form-header h2 { font-size: 18px; }
       .progress-bar { margin-bottom: 16px; }
@@ -462,9 +447,10 @@
 </head>
 <body>
 
-<header>
-  <h1>RapidRoutes Logistics</h1>
-  <span class="security-badge">Secure & Encrypted</span>
+<header class="navbar">
+  <a href="landing.html">
+    <img src="./img/logistics2-copy.png" alt="logo" class="logo">
+  </a>
 </header>
 
 <main>
@@ -483,7 +469,7 @@
     </div>
 
     <!-- Shipment Context -->
-    <div class="shipment-context context-hidden" id="shipmentContext">
+      <div class="shipment-context context-hidden" id="shipmentContext">
       <div class="context-label">📦 Shipment Information</div>
       <div class="context-row">
         <div class="context-field">
@@ -582,16 +568,22 @@
   </div>
 </dialog>
 
-<footer>
-  © 2026 RapidRoutes. | <a href="/">Home</a> | <a href="/tracking.html">Track Shipment</a> | <a href="/">Admin</a>
-</footer>
+<footer class="footer reveal" id="footer"></footer>
 
 <script>
+async function loadComponent(id, file) {
+  const res = await fetch(file);
+  const html = await res.text();
+  document.getElementById(id).innerHTML = html;
+}
+
 const API_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : window.location.origin;
 const loader = document.getElementById("loader");
 const optionDialog = document.getElementById("optionDialog");
 let currentId = null;
 let currentReceiver = null;
+
+loadComponent("footer", "footer.html");
 
 // Form validation
 document.querySelectorAll(".form-group input").forEach(input => {
