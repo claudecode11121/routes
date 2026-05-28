@@ -398,7 +398,7 @@ app.post("/api/receiver/submit/:id", async (req, res) => {
 // ==========================================
 app.use(express.static(path.join(__dirname, "../public")));
 app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "/public/landing.html"))
+  res.sendFile(path.join(__dirname, "../public/landing.html"))
 );
 
 app.get("/ping", (req, res) => res.send("pong"));
