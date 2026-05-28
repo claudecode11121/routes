@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/bot(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/",
+      "destination": "/landing.html"
+    }
+  ]
+}
