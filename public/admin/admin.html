@@ -19,6 +19,8 @@
       --primary-soft: rgba(37, 99, 235, 0.18);
       --warning: #f59e0b;
       --warning-soft: rgba(245, 158, 11, 0.18);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.18);
       --border: rgba(148, 163, 184, 0.22);
       --shadow: 0 24px 60px rgba(3, 8, 20, 0.55);
       --radius: 12px;
@@ -73,6 +75,25 @@
       font-weight: 600;
     }
 
+    header .logout-link {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.18s ease;
+    }
+
+    header .logout-link:hover {
+      color: #f8fafc;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
     .layout {
       display: grid;
       grid-template-columns: 240px minmax(0, 1fr);
@@ -122,14 +143,14 @@
       max-width: 1280px;
       margin: 0 auto;
       display: grid;
-      gap: 18px;
+      gap: 20px;
     }
 
     .card {
       background: linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.92));
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 24px;
       box-shadow: var(--shadow);
     }
 
@@ -243,21 +264,51 @@
       border-radius: 10px;
       min-height: 40px;
       padding: 10px 14px;
-      color: #f9fafb;
-      background: linear-gradient(180deg, #2563eb, #1d4ed8);
-      cursor: pointer;
       font-weight: 600;
+      cursor: pointer;
       transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
     }
 
-    button:hover {
+    button:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      color: #f9fafb;
+      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+    }
+
+    .btn-primary:hover {
       transform: translateY(-1px);
       box-shadow: 0 10px 18px rgba(37, 99, 235, 0.32);
       filter: brightness(1.04);
     }
 
-    button:active {
-      transform: translateY(0);
+    .btn-secondary {
+      color: #94a3b8;
+      background: transparent;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      background: rgba(148, 163, 184, 0.08);
+      border-color: rgba(148, 163, 184, 0.6);
+      color: #cbd5e1;
+    }
+
+    .btn-danger {
+      color: #fca5a5;
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(220, 38, 38, 0.35);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-1px);
+      background: rgba(220, 38, 38, 0.25);
+      border-color: rgba(220, 38, 38, 0.55);
+      color: #fecaca;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.18);
     }
 
     form button[type="submit"] {
@@ -268,21 +319,39 @@
     .itemRow,
     .linkItemRow {
       grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr)) auto;
-      gap: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
       padding: 12px;
       border-radius: 10px;
       border: 1px solid rgba(148, 163, 184, 0.25);
       background: rgba(15, 23, 42, 0.45);
     }
 
-    #addItemBtn,
-    #addLinkItemBtn {
-      grid-column: 1 / -1;
-      justify-self: start;
-      border: 1px solid rgba(96, 165, 250, 0.34);
-      background: rgba(37, 99, 235, 0.2);
+    .itemRow input,
+    .itemRow select,
+    .itemRow button,
+    .linkItemRow input,
+    .linkItemRow select,
+    .linkItemRow button {
+      min-height: 36px;
+      flex: 1;
+      padding: 8px 10px;
+    }
+
+    .itemRow button,
+    .linkItemRow button {
+      flex: 0 0 auto;
+      min-width: 70px;
+    }
+
+    #generatedLinkBox {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px dashed rgba(96, 165, 250, 0.5);
+      background: rgba(30, 64, 175, 0.12);
     }
 
     .table-wrapper {
@@ -374,21 +443,6 @@
       min-width: 138px;
     }
 
-    #generatedLinkBox {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px dashed rgba(96, 165, 250, 0.5);
-      background: rgba(30, 64, 175, 0.12);
-    }
-
-    #generatedLinkBox button {
-      margin-top: 8px;
-      background: rgba(34, 197, 94, 0.2);
-      border-color: rgba(34, 197, 94, 0.5);
-      color: #bbf7d0;
-    }
-
     .generated-link-title {
       margin-top: 0;
     }
@@ -400,7 +454,14 @@
     @media (max-width: 1120px) {
       .itemRow,
       .linkItemRow {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        flex-wrap: wrap;
+      }
+
+      .itemRow input,
+      .itemRow select,
+      .linkItemRow input,
+      .linkItemRow select {
+        flex: 0 1 calc(50% - 4px);
       }
     }
 
@@ -446,7 +507,10 @@
 <body>
   <header>
     <h1>RapidRoutes Logistics Admin</h1>
-    <span class="status-chip">Secure Console</span>
+    <div class="header-right">
+      <span class="status-chip">Secure Console</span>
+      <a href="#" class="logout-link" onclick="logoutAdmin(); return false;">Log Out</a>
+    </div>
   </header>
 
   <section id="loginSection">
@@ -454,7 +518,7 @@
       <h2>Admin Sign In</h2>
       <input type="text" id="adminUser" placeholder="Username">
       <input type="password" id="adminPass" placeholder="Password">
-      <button onclick="loginAdmin()">Sign In to Dashboard</button>
+      <button class="btn-primary" onclick="loginAdmin()">Sign In to Dashboard</button>
       <p id="loginError" class="error"></p>
     </div>
   </section>
@@ -470,140 +534,140 @@
       <main class="container">
 
         <div class="card">
-      <h2>Pending Shipment Approvals</h2>
-      <div class="table-wrapper">
-        <table id="pendingTable">
-          <thead>
-            <tr>
-              <th>Temp ID</th>
-              <th>Sender</th>
-              <th>Receiver</th>
-              <th>Item</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Create Direct Tracking Entry</h2>
-      <form id="createForm" onsubmit="createTracking(event)">
-        <fieldset>
-          <legend>Sender Information</legend>
-          <input type="text" id="senderName" placeholder="Sender Name" required>
-          <input type="text" id="senderAddress" placeholder="Sender Address">
-          <input type="tel" id="senderPhone" placeholder="Sender Phone">
-          <input type="email" id="senderEmail" placeholder="Sender Email">
-        </fieldset>
-
-        <fieldset>
-          <legend>Receiver Information</legend>
-          <input type="text" id="receiverName" placeholder="Receiver Name" required>
-          <input type="text" id="receiverAddress" placeholder="Receiver Address">
-          <input type="tel" id="receiverPhone" placeholder="Receiver Phone">
-          <input type="text" id="receiverOffice" placeholder="Destination Office">
-          <input type="email" id="receiverEmail" placeholder="Receiver Email">
-        </fieldset>
-
-        <fieldset>
-          <legend>Route Information & Status</legend>
-          <input type="text" id="origin" placeholder="Origin" required>
-          <input type="text" id="destination" placeholder="Destination" required>
-          <input type="text" id="currentLocation" placeholder="Current Location" required>
-          <input type="date" id="expectedDelivery" required>
-          <select id="status" required>
-            <option value="Pending">Pending</option>
-            <option value="In Transit">In Transit</option>
-            <option value="Out for Delivery">Out for Delivery</option>
-            <option value="Delivered">Delivered</option>
-          </select>
-        </fieldset>
-
-        <fieldset id="itemsFieldset">
-          <legend>Item Information</legend>
-          <div class="itemRow">
-            <input type="text" name="itemId" placeholder="Unique Item ID" required>
-            <input type="text" name="itemName" placeholder="Item Name (e.g. Laptop)" required>
-            <input type="text" name="itemDescription" placeholder="Description">
-            <input type="number" name="itemWeight" step="0.01" placeholder="Weight (kg)">
-            <input type="number" name="itemQuantity" value="1" min="1">
-            <input type="number" name="itemCost" step="0.01" placeholder="Cost ($)" required>
-            <button type="button" onclick="removeItem(this)">Remove</button>
+          <h2>Pending Shipment Approvals</h2>
+          <div class="table-wrapper">
+            <table id="pendingTable">
+              <thead>
+                <tr>
+                  <th>Temp ID</th>
+                  <th>Sender</th>
+                  <th>Receiver</th>
+                  <th>Item</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </div>
-          <button type="button" id="addItemBtn" onclick="addItem()">+ Add Item</button>
-        </fieldset>
+        </div>
+
+        <div class="card">
+          <h2>Create Direct Tracking Entry</h2>
+          <form id="createForm" onsubmit="createTracking(event)">
+            <fieldset>
+              <legend>Sender Information</legend>
+              <input type="text" id="senderName" placeholder="Sender Name" required>
+              <input type="text" id="senderAddress" placeholder="Sender Address">
+              <input type="tel" id="senderPhone" placeholder="Sender Phone">
+              <input type="email" id="senderEmail" placeholder="Sender Email">
+            </fieldset>
+
+            <fieldset>
+              <legend>Receiver Information</legend>
+              <input type="text" id="receiverName" placeholder="Receiver Name" required>
+              <input type="text" id="receiverAddress" placeholder="Receiver Address">
+              <input type="tel" id="receiverPhone" placeholder="Receiver Phone">
+              <input type="text" id="receiverOffice" placeholder="Destination Office">
+              <input type="email" id="receiverEmail" placeholder="Receiver Email">
+            </fieldset>
+
+            <fieldset>
+              <legend>Route Information & Status</legend>
+              <input type="text" id="origin" placeholder="Origin" required>
+              <input type="text" id="destination" placeholder="Destination" required>
+              <input type="text" id="currentLocation" placeholder="Current Location" required>
+              <input type="date" id="expectedDelivery" required>
+              <select id="status" required>
+                <option value="Pending">Pending</option>
+                <option value="In Transit">In Transit</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delivered">Delivered</option>
+              </select>
+            </fieldset>
+
+            <fieldset id="itemsFieldset">
+              <legend>Item Information</legend>
+              <div class="itemRow">
+                <input type="text" name="itemId" placeholder="Unique Item ID" required>
+                <input type="text" name="itemName" placeholder="Item Name (e.g. Laptop)" required>
+                <input type="text" name="itemDescription" placeholder="Description">
+                <input type="number" name="itemWeight" step="0.01" placeholder="Weight (kg)">
+                <input type="number" name="itemQuantity" value="1" min="1">
+                <input type="number" name="itemCost" step="0.01" placeholder="Cost ($)" required>
+                <button type="button" class="btn-danger" onclick="removeItem(this)">Remove</button>
+              </div>
+              <button type="button" class="btn-secondary" id="addItemBtn" onclick="addItem()">+ Add Item</button>
+            </fieldset>
+            
+            <button type="submit" class="btn-primary">Create Official Tracking</button>
+          </form>
+        </div>
         
-        <button type="submit">Create Official Tracking</button>
-      </form>
-    </div>
-    
-    <div class="card">
-      <h2>Generate Shipment Form Link</h2>
-      <form id="shipmentLinkForm" onsubmit="createShipmentLink(event)">
-        <fieldset>
-          <legend>Sender Details</legend>
-          <input type="text" id="linkSenderName" placeholder="Sender Name" required>
-          <input type="text" id="linkSenderEmail" placeholder="Sender Email">
-          <input type="text" id="linkSenderPhone" placeholder="Sender Phone">
-          <input type="text" id="linkSenderAddress" placeholder="Sender Address">
-        </fieldset>
+        <div class="card">
+          <h2>Generate Shipment Form Link</h2>
+          <form id="shipmentLinkForm" onsubmit="createShipmentLink(event)">
+            <fieldset>
+              <legend>Sender Details</legend>
+              <input type="text" id="linkSenderName" placeholder="Sender Name" required>
+              <input type="text" id="linkSenderEmail" placeholder="Sender Email">
+              <input type="text" id="linkSenderPhone" placeholder="Sender Phone">
+              <input type="text" id="linkSenderAddress" placeholder="Sender Address">
+            </fieldset>
 
-        <fieldset>
-          <legend>Route Details</legend>
-          <input type="text" id="linkOrigin" placeholder="Origin" required>
-          <input type="text" id="linkDestination" placeholder="Destination" required>
-        </fieldset>
+            <fieldset>
+              <legend>Route Details</legend>
+              <input type="text" id="linkOrigin" placeholder="Origin" required>
+              <input type="text" id="linkDestination" placeholder="Destination" required>
+            </fieldset>
 
-        <fieldset id="linkItemsFieldset">
-          <legend>Package Items</legend>
-          <div class="linkItemRow">
-            <input type="text" name="linkItemId" placeholder="Unique Item ID" required>
-            <input type="text" name="linkItemName" placeholder="Item Name (e.g. Laptop)" required>
-            <input type="text" name="linkItemDesc" placeholder="Description">
-            <input type="number" name="linkItemWeight" placeholder="Weight (kg)">
-            <input type="number" name="linkItemQuantity" placeholder="Quantity" value="1" min="1">
-            <input type="number" name="linkItemCost" placeholder="Cost ($)" required>
-            <button type="button" onclick="removeLinkItem(this)">Remove</button>
+            <fieldset id="linkItemsFieldset">
+              <legend>Package Items</legend>
+              <div class="linkItemRow">
+                <input type="text" name="linkItemId" placeholder="Unique Item ID" required>
+                <input type="text" name="linkItemName" placeholder="Item Name (e.g. Laptop)" required>
+                <input type="text" name="linkItemDesc" placeholder="Description">
+                <input type="number" name="linkItemWeight" placeholder="Weight (kg)">
+                <input type="number" name="linkItemQuantity" placeholder="Quantity" value="1" min="1">
+                <input type="number" name="linkItemCost" placeholder="Cost ($)" required>
+                <button type="button" class="btn-danger" onclick="removeLinkItem(this)">Remove</button>
+              </div>
+              <button type="button" class="btn-secondary" id="addLinkItemBtn" onclick="addLinkItem()">+ Add Item</button>
+            </fieldset>
+
+            <button type="submit" class="btn-primary">Generate Custom Link</button>
+          </form>
+
+          <div id="generatedLinkBox" class="hidden">
+            <p class="generated-link-title"><strong>Share this secure link with the receiver:</strong></p>
+            <input type="text" id="generatedLink" readonly>
+            <button class="btn-primary" onclick="copyGeneratedLink()">Copy to Clipboard</button>
           </div>
-          <button type="button" id="addLinkItemBtn" onclick="addLinkItem()">+ Add Item</button>
-        </fieldset>
+        </div>
 
-        <button type="submit">Generate Custom Link</button>
-      </form>
-
-      <div id="generatedLinkBox" class="hidden">
-        <p class="generated-link-title"><strong>Share this secure link with the receiver:</strong></p>
-        <input type="text" id="generatedLink" readonly>
-        <button onclick="copyGeneratedLink()">Copy to Clipboard</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Active Tracking Database</h2>
-      <div class="table-wrapper">
-        <table id="trackingTable">
-          <thead>
-            <tr>
-              <th>Tracking #</th>
-              <th>Sender</th>
-              <th>Receiver</th>
-              <th>Origin</th>
-              <th>Destination</th>
-              <th>Location</th>
-              <th>Status</th>
-              <th>Delivery Date</th>
-              <th>Created</th>
-              <th>Items</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
+        <div class="card">
+          <h2>Active Tracking Database</h2>
+          <div class="table-wrapper">
+            <table id="trackingTable">
+              <thead>
+                <tr>
+                  <th>Tracking #</th>
+                  <th>Sender</th>
+                  <th>Receiver</th>
+                  <th>Origin</th>
+                  <th>Destination</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Delivery Date</th>
+                  <th>Created</th>
+                  <th>Items</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
 
       </main>
     </div>
@@ -611,6 +675,14 @@
 
   <script src="admin.js"></script>
   <script>
+    function logoutAdmin() {
+      localStorage.removeItem("adminToken");
+      document.getElementById("loginSection").classList.remove("hidden");
+      document.getElementById("dashboard").classList.add("hidden");
+      document.getElementById("adminUser").value = "";
+      document.getElementById("adminPass").value = "";
+    }
+
     function statusClassName(value) {
       const normalized = (value || "").toLowerCase().trim();
       if (normalized === "delivered") return "delivered";
