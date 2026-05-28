@@ -35,6 +35,28 @@
 
     main{flex:1;padding:24px;overflow:auto}
     .container{max-width:1200px;margin:0 auto}
+    
+    /* Enhanced form grid, table polish, and badges */
+    /* Centered login card */
+    #loginSection{max-width:420px;margin:0 auto;text-align:left;min-height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center}
+    #loginSection .card{padding:32px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.04)}
+
+    form{display:block}
+    fieldset{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    fieldset legend{grid-column:1/-1;color:var(--gh-muted);font-size:12px;padding:6px 0}
+    fieldset input, fieldset select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent}
+    input:focus, select:focus{outline:none;box-shadow:0 6px 18px rgba(3,102,214,0.12);border-color:var(--gh-accent)}
+    button[type="submit"]{grid-column:1/-1}
+
+    th,td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
+    th{color:var(--gh-muted);font-size:12px;position:sticky;top:0;backdrop-filter:blur(6px);z-index:2}
+    tbody tr{transition:background 0.12s ease,transform 0.08s ease}
+    tbody tr:hover{background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);transform:translateY(-1px)}
+
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge.success{background:rgba(16,185,129,0.12);color:#10b981}
+    .badge.pending{background:rgba(250,204,21,0.08);color:#f59e0b}
+    .badge.intransit{background:rgba(59,130,246,0.09);color:#3b82f6}
 
     /* Card style */
     .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid var(--gh-border);padding:20px;border-radius:var(--gh-radius);box-shadow:0 6px 12px rgba(2,6,23,0.6);}
@@ -74,8 +96,16 @@
   </section>
 
   <section id="dashboard" class="hidden">
-    
-    <div class="card">
+    <div class="layout">
+      <aside>
+        <div style="margin-bottom:18px;color:var(--gh-text);font-weight:700">Admin</div>
+        <a class="nav-item" href="#" onclick="return false">Dashboard</a>
+        <a class="nav-item" href="#" onclick="return false">Shipments</a>
+        <a class="nav-item" href="#" onclick="return false">Settings</a>
+      </aside>
+      <main class="container">
+
+        <div class="card">
       <h2>Pending Shipment Approvals</h2>
       <div class="table-wrapper">
         <table id="pendingTable">
@@ -211,6 +241,8 @@
       </div>
     </div>
 
+      </main>
+    </div>
   </section>
 
   <script src="admin.js"></script>

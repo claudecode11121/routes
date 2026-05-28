@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/landing.html",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -7,10 +14,6 @@
     {
       "source": "/bot(.*)",
       "destination": "/api"
-    },
-    {
-      "source": "/",
-      "destination": "/landing.html"
     }
   ]
 }
