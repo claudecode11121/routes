@@ -2,27 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Admin Panel - Parcel Tracking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - ConsignTrack</title>
   <style>
     :root {
-      --bg: #090d14;
-      --bg-elevated: #111827;
-      --bg-panel: #0f172a;
-      --bg-subtle: #1f2937;
-      --surface: rgba(17, 24, 39, 0.9);
-      --text: #e5e7eb;
-      --text-muted: #9ca3af;
-      --accent: #22c55e;
-      --accent-soft: rgba(34, 197, 94, 0.2);
-      --primary: #2563eb;
-      --primary-soft: rgba(37, 99, 235, 0.18);
+      --bg: #ffffff;
+      --bg-elevated: #ffffff;
+      --bg-panel: #f8f9fa;
+      --bg-subtle: #efeef6;
+      --surface: #ffffff;
+      --text: #333333;
+      --text-muted: #555555;
+      --accent: #1d173c;
+      --accent-soft: rgba(29, 23, 60, 0.1);
+      --primary: #d84659;
+      --primary-soft: rgba(216, 70, 89, 0.12);
       --warning: #f59e0b;
-      --warning-soft: rgba(245, 158, 11, 0.18);
-      --danger: #dc2626;
-      --danger-soft: rgba(220, 38, 38, 0.18);
-      --border: rgba(148, 163, 184, 0.22);
-      --shadow: 0 24px 60px rgba(3, 8, 20, 0.55);
+      --warning-soft: rgba(245, 158, 11, 0.12);
+      --danger: #e63946;
+      --danger-soft: rgba(230, 57, 70, 0.12);
+      --border: rgba(29, 23, 60, 0.14);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
       --radius: 12px;
     }
 
@@ -37,51 +37,37 @@
       min-height: 100%;
       width: 100%;
       overflow-x: hidden; /* Hard stop on horizontal scrolling */
-      font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-family: "Poppins", sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(circle at 8% 16%, rgba(37, 99, 235, 0.17), transparent 42%),
-        radial-gradient(circle at 84% 4%, rgba(34, 197, 94, 0.12), transparent 34%),
-        linear-gradient(180deg, #0b1220 0%, var(--bg) 56%);
+      background: var(--bg);
     }
 
     header {
       position: sticky;
       top: 0;
       z-index: 20;
-      height: 62px;
+      min-height: 62px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 22px;
       border-bottom: 1px solid var(--border);
-      -webkit-backdrop-filter: blur(14px);
-      backdrop-filter: blur(14px);
-      background: rgba(9, 13, 20, 0.82);
+      background: #1d173c;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 15px;
-      letter-spacing: 0.04em;
-      font-weight: 600;
-      color: #f3f4f6;
-      white-space: nowrap;
+    .brand-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
     }
 
-    header .status-chip {
-      padding: 6px 10px;
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-radius: 999px;
-      color: #86efac;
-      background: rgba(34, 197, 94, 0.11);
-      font-size: 12px;
-      font-weight: 600;
-      white-space: nowrap;
+    .brand-logo {
+      width: 180px;
+      height: auto;
     }
 
     header .logout-link {
-      color: #94a3b8;
+      color: #c9c9d9;
       text-decoration: none;
       font-size: 13px;
       font-weight: 500;
@@ -91,7 +77,7 @@
     }
 
     header .logout-link:hover {
-      color: #f8fafc;
+      color: #ffffff;
     }
 
     .header-right {
@@ -109,13 +95,13 @@
 
     aside {
       border-right: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(17, 24, 39, 0.84), rgba(15, 23, 42, 0.76));
+      background: #f8f9fa;
       padding: 24px 14px;
     }
 
     .sidebar-title {
       margin: 0 10px 18px;
-      color: #f9fafb;
+      color: #1d173c;
       font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 0.09em;
@@ -128,7 +114,7 @@
       padding: 11px 12px;
       border-radius: 10px;
       border: 1px solid transparent;
-      color: #cbd5e1;
+      color: #555555;
       text-decoration: none;
       font-size: 14px;
       transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
@@ -136,9 +122,14 @@
 
     .nav-item:hover {
       transform: translateX(1px);
-      background: rgba(37, 99, 235, 0.14);
-      border-color: rgba(37, 99, 235, 0.24);
-      color: #f8fafc;
+      background: rgba(216, 70, 89, 0.12);
+      border-color: rgba(216, 70, 89, 0.2);
+      color: #1d173c;
+    }
+
+    .link-note {
+      margin-top: 0;
+      margin-bottom: 4px;
     }
 
     main {
@@ -157,7 +148,7 @@
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.92));
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 28px;
@@ -169,14 +160,14 @@
       margin: 0 0 18px;
       font-size: 18px;
       font-weight: 600;
-      color: #f8fafc;
+      color: var(--accent);
       letter-spacing: 0.01em;
     }
 
     .error {
       margin-top: 12px;
       min-height: 20px;
-      color: #fca5a5;
+      color: #b91c1c;
       font-size: 13px;
     }
 
@@ -189,16 +180,9 @@
 
     #loginSection .card {
       width: min(400px, 100%);
-      border: 1px solid rgba(96, 165, 250, 0.32);
-      background:
-        linear-gradient(145deg, rgba(17, 24, 39, 0.84), rgba(17, 24, 39, 0.56)),
-        rgba(17, 24, 39, 0.62);
-      -webkit-backdrop-filter: blur(18px);
-      backdrop-filter: blur(18px);
-      box-shadow:
-        0 24px 60px rgba(6, 12, 28, 0.62),
-        0 0 0 1px rgba(34, 197, 94, 0.18),
-        0 0 80px rgba(37, 99, 235, 0.24);
+      border: 1px solid var(--border);
+      background: #fff;
+      box-shadow: var(--shadow);
       padding: 32px;
     }
 
@@ -246,26 +230,26 @@
       min-height: 44px;
       padding: 10px 14px;
       border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.34);
-      background: rgba(15, 23, 42, 0.8);
-      color: #f1f5f9;
+      border: 1px solid rgba(29, 23, 60, 0.18);
+      background: #fff;
+      color: var(--text);
       transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
     }
 
     input::placeholder {
-      color: #64748b;
+      color: #888;
     }
 
     input:hover, select:hover {
-      border-color: rgba(96, 165, 250, 0.6);
-      background: rgba(15, 23, 42, 0.93);
+      border-color: rgba(216, 70, 89, 0.42);
+      background: #fff;
     }
 
     input:focus, select:focus {
       outline: none;
-      border-color: #60a5fa;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.24);
-      background: rgba(15, 23, 42, 0.98);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(216, 70, 89, 0.14);
+      background: #fff;
     }
 
     button {
@@ -287,43 +271,47 @@
     }
 
     .btn-primary {
-      color: #f9fafb;
-      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      background: #d84659;
       width: 100%;
       max-width: 280px;
     }
 
+    .full-width-btn {
+      max-width: 100%;
+    }
+
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 10px 18px rgba(37, 99, 235, 0.32);
+      box-shadow: 0 10px 18px rgba(216, 70, 89, 0.26);
       filter: brightness(1.04);
     }
 
     .btn-secondary {
-      color: #94a3b8;
+      color: #1d173c;
       background: transparent;
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      border: 1px solid rgba(29, 23, 60, 0.22);
     }
 
     .btn-secondary:hover {
       transform: translateY(-1px);
-      background: rgba(148, 163, 184, 0.08);
-      border-color: rgba(148, 163, 184, 0.6);
-      color: #cbd5e1;
+      background: rgba(29, 23, 60, 0.06);
+      border-color: rgba(29, 23, 60, 0.35);
+      color: #1d173c;
     }
 
     .btn-danger {
-      color: #fca5a5;
-      background: rgba(220, 38, 38, 0.15);
-      border: 1px solid rgba(220, 38, 38, 0.35);
+      color: #b91c1c;
+      background: rgba(230, 57, 70, 0.12);
+      border: 1px solid rgba(230, 57, 70, 0.28);
     }
 
     .btn-danger:hover {
       transform: translateY(-1px);
-      background: rgba(220, 38, 38, 0.25);
-      border-color: rgba(220, 38, 38, 0.55);
-      color: #fecaca;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.18);
+      background: rgba(230, 57, 70, 0.18);
+      border-color: rgba(230, 57, 70, 0.42);
+      color: #7f1d1d;
+      box-shadow: 0 4px 12px rgba(230, 57, 70, 0.12);
     }
 
     .itemRow, .linkItemRow {
@@ -335,8 +323,8 @@
       margin-bottom: 12px;
       padding: 16px;
       border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(29, 23, 60, 0.12);
+      background: #f8f9fa;
       width: 100%;
     }
 
@@ -353,8 +341,8 @@
       margin-top: 20px;
       padding: 16px;
       border-radius: 10px;
-      border: 1px dashed rgba(96, 165, 250, 0.5);
-      background: rgba(30, 64, 175, 0.12);
+      border: 1px dashed rgba(216, 70, 89, 0.38);
+      background: rgba(216, 70, 89, 0.08);
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -363,17 +351,16 @@
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
       border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid rgba(29, 23, 60, 0.12);
+      background: #fff;
     }
 
     table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
-      color: #e2e8f0;
+      color: #333333;
       font-size: 13px;
       white-space: nowrap; /* Forces table not to squish */
     }
@@ -381,13 +368,13 @@
     th, td {
       text-align: left;
       padding: 14px 16px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.13);
+      border-bottom: 1px solid rgba(29, 23, 60, 0.08);
       vertical-align: middle;
     }
 
     thead th {
-      background: rgba(17, 24, 39, 0.95);
-      color: #cbd5e1;
+      background: #1d173c;
+      color: #c9c9d9;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
@@ -398,7 +385,7 @@
     }
 
     tbody tr:hover {
-      background: rgba(37, 99, 235, 0.12);
+      background: rgba(216, 70, 89, 0.08);
     }
 
     .status-pill {
@@ -415,28 +402,28 @@
     }
 
     .status-pill.pending {
-      color: #fcd34d;
+      color: #b45309;
       background: var(--warning-soft);
-      border-color: rgba(245, 158, 11, 0.45);
+      border-color: rgba(245, 158, 11, 0.25);
     }
 
     .status-pill.in-transit, .status-pill.out-for-delivery {
-      color: #93c5fd;
+      color: #1d173c;
       background: var(--primary-soft);
-      border-color: rgba(59, 130, 246, 0.44);
+      border-color: rgba(216, 70, 89, 0.25);
     }
 
     .status-pill.delivered {
-      color: #86efac;
+      color: #166534;
       background: var(--accent-soft);
-      border-color: rgba(34, 197, 94, 0.46);
+      border-color: rgba(29, 23, 60, 0.18);
     }
 
     #trackingTable td:nth-child(7) select {
       min-height: 32px;
       border-radius: 999px;
-      border-color: rgba(148, 163, 184, 0.45);
-      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(29, 23, 60, 0.2);
+      background: #fff;
       padding: 6px 30px 6px 14px;
       font-size: 12px;
       font-weight: 600;
@@ -460,7 +447,6 @@
         display: flex;
         align-items: center;
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
         white-space: nowrap;
       }
 
@@ -511,12 +497,6 @@
     }
 
     @media (max-width: 480px) {
-      header h1 {
-        font-size: 14px;
-      }
-      header .status-chip {
-        display: none; /* Hide chip on very small screens to save space */
-      }
       .card {
         padding: 16px;
       }
@@ -528,9 +508,10 @@
 </head>
 <body>
   <header>
-    <h1>RapidRoutes Logistics Admin</h1>
+    <a class="brand-link" href="../landing.html">
+      <img class="brand-logo" src="../img/logistics2-copy.png" alt="ConsignTrack logo">
+    </a>
     <div class="header-right">
-      <span class="status-chip">Secure Console</span>
       <a href="#" class="logout-link" onclick="logoutAdmin(); return false;">Log Out</a>
     </div>
   </header>
@@ -541,7 +522,7 @@
       <form onsubmit="event.preventDefault(); loginAdmin();">
         <input type="text" id="adminUser" placeholder="Username" required>
         <input type="password" id="adminPass" placeholder="Password" required>
-        <button type="submit" class="btn-primary" style="max-width: 100%;">Sign In to Dashboard</button>
+        <button type="submit" class="btn-primary full-width-btn">Sign In to Dashboard</button>
         <p id="loginError" class="error"></p>
       </form>
     </div>
@@ -664,7 +645,7 @@
             </form>
 
             <div id="generatedLinkBox" class="hidden">
-              <p style="margin-top: 0; margin-bottom: 4px;"><strong>Share this secure link with the receiver:</strong></p>
+              <p class="link-note"><strong>Share this secure link with the receiver:</strong></p>
               <input type="text" id="generatedLink" readonly>
               <button class="btn-primary" onclick="copyGeneratedLink()">Copy to Clipboard</button>
             </div>
@@ -699,8 +680,18 @@
     </div>
   </section>
 
+  <footer class="footer reveal" id="footer"></footer>
+
   <script src="admin.js"></script>
   <script>
+    async function loadComponent(id, file) {
+      const res = await fetch(file);
+      const html = await res.text();
+      document.getElementById(id).innerHTML = html;
+    }
+
+    loadComponent("footer", "../footer.html");
+
     function logoutAdmin() {
       localStorage.removeItem("adminToken");
       document.getElementById("loginSection").classList.remove("hidden");

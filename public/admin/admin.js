@@ -68,8 +68,8 @@ async function loadPendingShipments() {
 
         <td>${sh.status}</td>
         <td>
-          <button onclick="approveShipment('${sh._id}')">Approve</button>
-          <button onclick="rejectShipment('${sh._id}')">Reject</button>
+          <button onclick="approveShipment('${sh.id}')">Approve</button>
+          <button onclick="rejectShipment('${sh.id}')">Reject</button>
         </td>
       `;
       tbody.appendChild(row);
@@ -200,7 +200,7 @@ async function loadTracking() {
           : "No items"}
         </td>
         <td>
-          <button onclick="deleteTracking('${entry._id}')">Delete</button>
+          <button onclick="deleteTracking('${entry.id}')">Delete</button>
         </td>
       `;
       tbody.appendChild(row);
