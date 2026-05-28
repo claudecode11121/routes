@@ -1,95 +1,553 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Receiver Sign-Up | Rapid Route</title>
-<link rel="stylesheet" href="fill-receiver.css" />
-<style>
-/* ===== Mobile & UI Fixes ===== */
-* { box-sizing: border-box; }
-body { margin: 0; font-family: "Inter", sans-serif; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receiver Details | RapidRoutes</title>
+  <style>
+    :root {
+      --bg: #090d14;
+      --bg-elevated: #111827;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --primary: #2563eb;
+      --primary-soft: rgba(37, 99, 235, 0.18);
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.2);
+      --warning: #f59e0b;
+      --border: rgba(148, 163, 184, 0.22);
+      --shadow: 0 24px 60px rgba(3, 8, 20, 0.55);
+      --radius: 12px;
+    }
 
-/* ===== Navbar Styles ===== */
-.navbar { width:100%; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.08); padding:15px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:999; }
-.navbar .logo { max-height:50px; width:auto; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #0b1220 0%, var(--bg) 56%);
+    }
 
-main { padding:40px 15px; display:flex; justify-content:center; align-items:center; min-height:calc(100vh - 80px); }
+    /* ===== Header ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--border);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      background: rgba(9, 13, 20, 0.82);
+    }
 
-.form-card { width:100%; max-width:500px; background:#fff; padding:30px 20px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); }
-.form-group { margin-bottom:18px; }
-.form-group label { display:block; margin-bottom:6px; font-weight:500; font-size:0.95rem; color:#333; }
-.form-group input { width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; font-size:1rem; transition:border-color 0.3s; }
-.form-group input:focus { outline:none; border-color:#007bff; }
-button[type="submit"] { width:100%; padding:14px; background:#007bff; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:10px; }
+    header h1 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      color: #f3f4f6;
+    }
 
-.loader { display:none; border:4px solid #f3f3f3; border-top:4px solid #007bff; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; margin:20px auto; }
-@keyframes spin { 0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
+    header .security-badge {
+      padding: 6px 10px;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 999px;
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.11);
+      font-size: 12px;
+      font-weight: 600;
+    }
 
-/* ===== Dialog ===== */
-dialog { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); border:none; padding:0; border-radius:16px; max-width:420px; width:90%; background:#fff; animation:popIn 0.4s ease; box-shadow:0 15px 40px rgba(0,0,0,0.25); z-index:1000; }
-dialog::backdrop { background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); }
-.dialog-container { padding:30px 20px; text-align:center; }
-.dialog-icon { width:80px; height:80px; margin:0 auto 15px; }
-.circle-bg { fill:none; stroke:#e9ecef; stroke-width:8; }
-.circle-progress { fill:none; stroke:#007bff; stroke-width:8; stroke-linecap:round; stroke-dasharray:339.29; stroke-dashoffset:339.29; animation:drawCircle 1s ease-out forwards; }
-.checkmark { fill:none; stroke:#007bff; stroke-width:8; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:60; stroke-dashoffset:60; animation:drawCheck 0.5s ease-out 1s forwards; }
-.dialog-title { color:#007bff; font-size:1.3rem; margin-top:5px; margin-bottom:10px; }
-.dialog-text { color:#444; font-size:0.95rem; margin-bottom:25px; line-height:1.4; }
+    /* ===== Main Content ===== */
+    main {
+      padding: 28px 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 62px - 140px);
+    }
 
-.dialog-buttons { display:flex; flex-direction:column; gap:12px; }
-@media(min-width:400px){ .dialog-buttons{ flex-direction:row; justify-content:center; } }
-.dialog-buttons button { width:100%; color:#fff; border:none; border-radius:8px; padding:12px 16px; cursor:pointer; font-weight:600; font-size:0.9rem; transition:0.3s ease; }
-.icon-btn { display:flex; align-items:center; gap:8px; justify-content:center; }
-.icon-btn svg { width:18px; height:18px; flex-shrink:0; }
-.icon-btn.telegram { background:#0088cc; }
-.icon-btn.telegram:hover { background:#006ea8; }
-.icon-btn.email { background:#007bff; }
-.icon-btn.email:hover { background:#0056b3; }
+    .page-container {
+      width: 100%;
+      max-width: 700px;
+    }
 
-@keyframes popIn{ from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
-@keyframes drawCircle{ to{stroke-dashoffset:0;} }
-@keyframes drawCheck{ to{stroke-dashoffset:0;} }
+    /* ===== Progress Indicator ===== */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      font-size: 12px;
+    }
 
-</style>
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+
+    .progress-step.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .progress-step.completed {
+      color: var(--accent);
+    }
+
+    .step-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .progress-step.active .step-number {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .progress-step.completed .step-number {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* ===== Shipment Context Card ===== */
+    .shipment-context {
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.92));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .context-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .context-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .context-field {
+      font-size: 13px;
+    }
+
+    .context-field strong {
+      display: block;
+      color: var(--text);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ===== Form Card ===== */
+    .form-card {
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.92));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-header {
+      margin-bottom: 20px;
+    }
+
+    .form-header h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #f8fafc;
+      letter-spacing: 0.01em;
+    }
+
+    .form-header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 13px;
+      color: #d1d5db;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.34);
+      background: rgba(15, 23, 42, 0.8);
+      color: #f1f5f9;
+      font-size: 14px;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    .form-group input::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-group input:hover, .form-group select:hover {
+      border-color: rgba(96, 165, 250, 0.6);
+      background: rgba(15, 23, 42, 0.93);
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.24);
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .form-group.error input {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.18);
+    }
+
+    .error-message {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #fca5a5;
+      display: none;
+    }
+
+    .form-group.error .error-message {
+      display: block;
+    }
+
+    /* ===== Button ===== */
+    button[type="submit"] {
+      width: 100%;
+      min-height: 44px;
+      padding: 12px 16px;
+      background: var(--primary);
+      color: #f9fafb;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
+      margin-top: 4px;
+    }
+
+    button[type="submit"]:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(37, 99, 235, 0.32);
+      filter: brightness(1.04);
+    }
+
+    button[type="submit"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .loader {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(148, 163, 184, 0.3);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 12px auto;
+    }
+
+    .loader-text {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== Dialog ===== */
+    dialog {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: none;
+      padding: 0;
+      border-radius: var(--radius);
+      max-width: 420px;
+      width: 90%;
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(15, 23, 42, 0.98));
+      border: 1px solid var(--border);
+      animation: popIn 0.4s ease;
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.6);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+
+    .dialog-container {
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .dialog-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+    }
+
+    .circle-bg { fill: none; stroke: rgba(148, 163, 184, 0.3); stroke-width: 6; }
+    .circle-progress { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 339.29; stroke-dashoffset: 339.29; animation: drawCircle 1s ease-out forwards; }
+    .checkmark { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: drawCheck 0.5s ease-out 1s forwards; }
+
+    .dialog-title {
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 12px;
+    }
+
+    .dialog-text {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .dialog-summary {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 20px;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .dialog-summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    .dialog-summary-item strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .dialog-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width: 444px) {
+      .dialog-buttons { flex-direction: row; gap: 12px; }
+      .dialog-buttons button { flex: 1; }
+    }
+
+    .dialog-buttons button {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .btn-telegram {
+      background: #0088cc;
+      color: #fff;
+    }
+
+    .btn-telegram:hover {
+      background: #006ea8;
+    }
+
+    .btn-email {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-email:hover {
+      background: #1d4ed8;
+    }
+
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+    /* ===== Footer ===== */
+    footer {
+      background: rgba(9, 13, 20, 0.82);
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      margin: 0 8px;
+      transition: color 0.18s ease;
+    }
+
+    footer a:hover {
+      color: #60a5fa;
+    }
+
+    /* ===== Responsive ===== */
+    /* ===== Utility Classes ===== */
+    .progress-arrow {
+      color: var(--border);
+    }
+
+    .required-star {
+      color: var(--primary);
+    }
+
+    .context-hidden {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      header h1 { font-size: 14px; }
+      header .security-badge { font-size: 11px; }
+      main { padding: 16px; min-height: calc(100vh - 62px - 100px); }
+      .form-card { padding: 16px; }
+      .form-header h2 { font-size: 18px; }
+      .progress-bar { margin-bottom: 16px; }
+      .context-row { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<nav class="navbar">
-  <img class="logo" src="./img/logistics2-copy.png" alt="Logo">
-</nav>
+<header>
+  <h1>RapidRoutes Logistics</h1>
+  <span class="security-badge">Secure & Encrypted</span>
+</header>
 
 <main>
-  <div class="form-card">
-    <h2 style="text-align:center;">Receiver Registration</h2>
-    <p style="text-align:center;color:#666;margin-bottom:20px;">Please fill in the receiver’s details below</p>
+  <div class="page-container">
+    <!-- Progress Indicator -->
+    <div class="progress-bar">
+      <div class="progress-step active">
+        <span class="step-number">1</span>
+        <span>Receiver Details</span>
+      </div>
+      <span class="progress-arrow">→</span>
+      <div class="progress-step">
+        <span class="step-number">2</span>
+        <span>Confirmation</span>
+      </div>
+    </div>
 
-    <form id="receiverForm" onsubmit="submitReceiver(event)">
-      <div class="form-group">
-        <label for="receiverName">Full Name</label>
-        <input type="text" id="receiverName" placeholder="John Doe" required />
+    <!-- Shipment Context -->
+    <div class="shipment-context context-hidden" id="shipmentContext">
+      <div class="context-label">📦 Shipment Information</div>
+      <div class="context-row">
+        <div class="context-field">
+          <span class="context-label">From</span>
+          <strong id="contextSender">-</strong>
+        </div>
+        <div class="context-field">
+          <span class="context-label">Tracking #</span>
+          <strong id="contextTracking">-</strong>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="receiverAddress">Address</label>
-        <input type="text" id="receiverAddress" placeholder="123 Example Street" required />
+      <div class="context-row">
+        <div class="context-field">
+          <span class="context-label">Items</span>
+          <strong id="contextItems">-</strong>
+        </div>
+        <div class="context-field">
+          <span class="context-label">Est. Delivery</span>
+          <strong id="contextDelivery">-</strong>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="receiverEmail">Email</label>
-        <input type="email" id="receiverEmail" placeholder="example@mail.com" required />
-      </div>
-      <div class="form-group">
-        <label for="receiverPhone">Phone Number</label>
-        <input type="tel" id="receiverPhone" placeholder="+234 801 234 5678" required />
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Receiver Information</h2>
+        <p>Please provide your details to confirm receipt of the shipment.</p>
       </div>
 
-      <button type="submit">Submit Details</button>
-      <div class="loader" id="loader"></div>
-    </form>
+      <form id="receiverForm" onsubmit="submitReceiver(event)">
+        <div class="form-group">
+          <label for="receiverName">Full Name <span class="required-star">*</span></label>
+          <input type="text" id="receiverName" placeholder="Your full name" required />
+          <span class="error-message">Please enter a valid name</span>
+        </div>
+
+        <div class="form-group">
+          <label for="receiverAddress">Delivery Address <span class="required-star">*</span></label>
+          <input type="text" id="receiverAddress" placeholder="Street address, city, postal code" required />
+          <span class="error-message">Please enter a valid address</span>
+        </div>
+
+        <div class="form-group">
+          <label for="receiverEmail">Email Address <span class="required-star">*</span></label>
+          <input type="email" id="receiverEmail" placeholder="your.email@example.com" required />
+          <span class="error-message">Please enter a valid email</span>
+        </div>
+
+        <div class="form-group">
+          <label for="receiverPhone">Phone Number <span class="required-star">*</span></label>
+          <input type="tel" id="receiverPhone" placeholder="+1 (555) 123-4567" required />
+          <span class="error-message">Please enter a valid phone number</span>
+        </div>
+
+        <button type="submit">Continue to Confirmation</button>
+        <div class="loader" id="loader"></div>
+        <div class="loader-text" id="loaderText"></div>
+      </form>
+    </div>
   </div>
 </main>
 
-<footer class="footer" id="footer"></footer>
-
+<!-- Success Dialog -->
 <dialog id="optionDialog">
   <div class="dialog-container">
     <div class="dialog-icon">
@@ -99,14 +557,34 @@ dialog::backdrop { background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); }
         <polyline class="checkmark" points="40,65 55,80 85,45" />
       </svg>
     </div>
-    <h2 class="dialog-title">Details Submitted Successfully!</h2>
-    <p class="dialog-text">You can confirm via Telegram or Email to complete the process.</p>
+    <h2 class="dialog-title">Details Confirmed!</h2>
+    <p class="dialog-text">Your information has been securely saved. Complete the verification below to finalize your shipment receipt.</p>
+
+    <div class="dialog-summary">
+      <div class="dialog-summary-item">
+        <span>Name:</span>
+        <strong id="summaryName">-</strong>
+      </div>
+      <div class="dialog-summary-item">
+        <span>Email:</span>
+        <strong id="summaryEmail">-</strong>
+      </div>
+      <div class="dialog-summary-item">
+        <span>Phone:</span>
+        <strong id="summaryPhone">-</strong>
+      </div>
+    </div>
+
     <div class="dialog-buttons">
-      <button id="telegramBtn" class="icon-btn telegram">Confirm via Telegram</button>
-      <button id="emailBtn" class="icon-btn email">Confirm via Email</button>
+      <button id="telegramBtn" class="btn-telegram">📱 Confirm via Telegram</button>
+      <button id="emailBtn" class="btn-email">✉️ Confirm via Email</button>
     </div>
   </div>
 </dialog>
+
+<footer>
+  © 2026 RapidRoutes. | <a href="/">Home</a> | <a href="/tracking.html">Track Shipment</a> | <a href="/">Admin</a>
+</footer>
 
 <script>
 const API_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : window.location.origin;
@@ -115,11 +593,50 @@ const optionDialog = document.getElementById("optionDialog");
 let currentId = null;
 let currentReceiver = null;
 
+// Form validation
+document.querySelectorAll(".form-group input").forEach(input => {
+  input.addEventListener("blur", () => validateField(input));
+});
+
+function validateField(input) {
+  const group = input.parentElement;
+  let isValid = true;
+
+  if (input.id === "receiverName") {
+    isValid = input.value.trim().length >= 2;
+  } else if (input.id === "receiverEmail") {
+    isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+  } else if (input.id === "receiverPhone") {
+    isValid = /^\+?[\d\s\-\(\)]{10,}$/.test(input.value.replace(/\s/g, ""));
+  } else {
+    isValid = input.value.trim().length > 0;
+  }
+
+  if (isValid) {
+    group.classList.remove("error");
+  } else {
+    group.classList.add("error");
+  }
+  return isValid;
+}
+
 async function submitReceiver(e) {
   e.preventDefault();
+  
+  // Validate all fields
+  let allValid = true;
+  document.querySelectorAll(".form-group input").forEach(input => {
+    if (!validateField(input)) allValid = false;
+  });
+  
+  if (!allValid) {
+    alert("Please fix the errors in the form before submitting.");
+    return;
+  }
+
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get("id");
-  if(!id) return alert("Invalid link.");
+  if (!id) return alert("Invalid link.");
 
   const receiver = {
     name: document.getElementById("receiverName").value.trim(),
@@ -129,68 +646,93 @@ async function submitReceiver(e) {
   };
 
   loader.style.display = "block";
+  document.getElementById("loaderText").textContent = "Saving your details...";
   document.querySelector("button[type='submit']").disabled = true;
 
   try {
     // 1️⃣ Save receiver to DB
     const res = await fetch(`${API_URL}/api/receiver/submit/${id}`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({ receiver })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ receiver })
     });
 
     loader.style.display = "none";
+    document.getElementById("loaderText").textContent = "";
     document.querySelector("button[type='submit']").disabled = false;
 
-    if(res.ok){
+    if (res.ok) {
       document.getElementById("receiverForm").reset();
       currentId = id;
       currentReceiver = receiver;
 
+      // Populate summary
+      document.getElementById("summaryName").textContent = receiver.name;
+      document.getElementById("summaryEmail").textContent = receiver.email;
+      document.getElementById("summaryPhone").textContent = receiver.phone;
+
       // 2️⃣ Notify Telegram linked user if exists
-      try{
+      try {
         await fetch(`${API_URL}/api/notify/telegram/telegram`, {
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({ tempId:id, ...receiver })
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tempId: id, ...receiver })
         });
         console.log("✅ Telegram notification sent");
-      }catch(err){
+      } catch (err) {
         console.warn("⚠️ Telegram notification failed:", err);
       }
 
       optionDialog.showModal();
     } else {
       const data = await res.json();
-      alert("❌ Error: "+(data.error || "Submission failed"));
+      alert("❌ Error: " + (data.error || "Submission failed"));
     }
-  } catch(err){
+  } catch (err) {
     loader.style.display = "none";
+    document.getElementById("loaderText").textContent = "";
     document.querySelector("button[type='submit']").disabled = false;
     alert("Network error. Please try again.");
+    console.error(err);
   }
 }
 
 // Telegram button
 document.getElementById("telegramBtn").onclick = () => {
-  if(!currentId) return alert("Missing ID. Submit form first.");
-  window.open(`https://t.me/Rapidroutes_bot?start=${currentId}`,"_blank");
+  if (!currentId) return alert("Missing ID. Submit form first.");
+  window.open(`https://t.me/RapidroutesreceiverBot?start=${currentId}`, "_blank");
   optionDialog.close();
 };
 
 // Email button
 document.getElementById("emailBtn").onclick = async () => {
-  if(!currentReceiver || !currentId) return alert("Missing data. Submit form first.");
-  try{
+  if (!currentReceiver || !currentId) return alert("Missing data. Submit form first.");
+  
+  const btn = document.getElementById("emailBtn");
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+  
+  try {
     const res = await fetch(`${API_URL}/api/notify/email`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({ tempId:currentId, ...currentReceiver })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tempId: currentId, ...currentReceiver })
     });
-    if(res.ok) alert("✅ Email sent successfully!");
-    else alert("❌ Failed to send email.");
+    
+    if (res.ok) {
+      alert("✅ Confirmation email sent successfully!");
+    } else {
+      alert("❌ Failed to send email. Please try again.");
+    }
+    btn.disabled = false;
+    btn.textContent = "✉️ Confirm via Email";
     optionDialog.close();
-  }catch(err){ alert("Network error sending email."); }
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = "✉️ Confirm via Email";
+    alert("Network error sending email.");
+    console.error(err);
+  }
 };
 </script>
 </body>
