@@ -40,19 +40,17 @@ async function linkUserFromApi(tempId, chatId, username) {
     // Mark the session as active as soon as the link is created.
     await updateSessionState(chatId, "IDLE", tempId);
 
-    // Send the customer a proactive welcome message without blocking linking.
+    // Send the customer a proactive welcome message with proper error handling.
     if (bot) {
-      bot
-        .sendMessage(
+      try {
+        await bot.sendMessage(
           chatId,
           `Hello ${username}! Your shipment request (${tempId}) has been received. You can reply directly to this message to chat with our support team regarding your parcel.`
-        )
-        .then(() => {
-          console.log('📨 Proactive welcome successfully sent to', chatId);
-        })
-        .catch((err) => {
-          console.error("❌ Failed to send proactive welcome message:", err.message);
-        });
+        );
+        console.log('📨 Proactive welcome successfully sent to', chatId);
+      } catch (err) {
+        console.error("❌ Failed to send proactive welcome message:", err.message);
+      }
     }
 
     return user;
@@ -117,8 +115,6 @@ async function processIncomingMessage(msg) {
   console.log(`📬 Message from ${chatId}: "${(text || '').toString().substring(0, 50)}..."`);
 
   try {
-    if (text && text.startsWith('/start')) return;
-
     if (chatId !== adminId) {
       try {
         await bot.forwardMessage(adminId, chatId, msg.message_id);
@@ -171,57 +167,55 @@ async function processIncomingMessage(msg) {
   }
 }
 
+// =====================
+// Unified Message Router
+// =====================
 if (bot) {
   bot.on('message', async (msg) => {
-    await processIncomingMessage(msg);
-  });
-}
+    const chatId = msg.chat.id;
+    const text = msg.text || "";
 
-// =====================
-// /start command
-// =====================
-if (bot) {
-  bot.onText(/^\/start(?:\s+(.+))?/, async (msg, match) => {
     try {
-      const chatId = msg.chat.id;
-      const tempId = match[1]; 
-      const username = msg.from.username ? `@${msg.from.username}` : msg.from.first_name || "User";
+      // Check if this is a /start command (handle it specially)
+      if (text && text.startsWith('/start')) {
+        const match = text.match(/^\/start(?:\s+(.+))?/);
+        const tempId = match ? match[1] : null;
+        const username = msg.from.username ? `@${msg.from.username}` : msg.from.first_name || "User";
 
-      console.log("🚀 /start triggered:", { chatId, tempId });
+        console.log("🚀 /start triggered:", { chatId, tempId });
 
-      if (!tempId) {
-        try {
-          await bot.sendMessage(chatId, "👋 Welcome to Rapid Routes! Please use your specific shipment link to get started.");
-        } catch (err) {
-          console.error("❌ Failed to send welcome message:", err.message);
+        if (!tempId) {
+          try {
+            await bot.sendMessage(chatId, "👋 Welcome to Rapid Routes! Please use your specific shipment link to get started.");
+          } catch (err) {
+            console.error("❌ Failed to send welcome message:", err.message);
+          }
+          return;
         }
-        return;
-      }
 
-      // Link the user (creates DB entry)
-      await linkUserFromApi(tempId, chatId, username);
+        // Link the user (creates DB entry) and send proactive welcome
+        await linkUserFromApi(tempId, chatId, username);
 
-    try {
-      await bot.sendMessage(adminId,
-        `🔗 User Linked via Telegram
+        // Notify admin of new user link
+        try {
+          await bot.sendMessage(adminId,
+            `🔗 User Linked via Telegram
 ━━━━━━━━━━━━━━━
 🆔 Temp ID: ${tempId}
 👤 Username: ${username}
 💬 Chat ID: ${chatId}`
-      );
-    } catch (err) {
-      console.error("❌ Failed to notify admin of new user:", err.message);
-    }
+          );
+        } catch (err) {
+          console.error("❌ Failed to notify admin of new user:", err.message);
+        }
+        return;
+      }
 
-  } catch (err) {
-    console.error("❌ /start error:", err.message);
-    try {
-      // ✅ NOW WITH AWAIT - Promise won't silently reject
-      await bot.sendMessage(chatId, "❌ Failed to link your Tracking ID. Please try again or contact support.");
-    } catch (sendErr) {
-      console.error("❌ CRITICAL: Could not send error message to user:", sendErr.message);
+      // Not a /start command - process as regular message (forward to admin, reply logic, etc.)
+      await processIncomingMessage(msg);
+    } catch (err) {
+      console.error("❌ Unified message handler error:", err.message, err.stack);
     }
-  }
   });
 }
 
