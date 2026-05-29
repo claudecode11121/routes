@@ -95,14 +95,15 @@ if (process.env.TELEGRAM_BOT_TOKEN && bot) {
     const webhookUrl = `${BASE_URL}${webhookPath}`;
     
     console.log(`🔗 Registering Telegram webhook URL: ${webhookUrl}`);
-    bot.setWebHook(webhookUrl)
-      .then(() => {
+    (async () => {
+      try {
+        await bot.setWebHook(webhookUrl);
         webhookSetSuccess = true;
         console.log(`✅ Telegram Webhook successfully set to: ${webhookUrl}`);
-      })
-      .catch(err => {
-        console.error("❌ Failed to set Telegram webhook:", err.message);
-      });
+      } catch (err) {
+        console.error("Webhook setup failed, but continuing server boot...", err.message);
+      }
+    })();
 
     // Catch the messages using the clean path
     app.post(webhookPath, async (req, res) => {
@@ -405,4 +406,11 @@ app.get("/", (req, res) =>
 app.get("/ping", (req, res) => res.send("pong"));
 
 module.exports = app;
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Local development server running on port ${PORT}`);
+  });
+}
 
