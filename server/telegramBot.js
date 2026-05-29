@@ -11,9 +11,14 @@ if (!token) {
   console.warn("⚠️ WARNING: TELEGRAM_BOT_TOKEN not set in environment variables");
 }
 
-const bot = token ? new TelegramBot(token) : null;
+let bot = token ? new TelegramBot(token) : null;
 if (bot) {
   console.log("🌐 Telegram bot initialized");
+}
+
+// Allow tests to replace the bot with a mock
+function setBot(newBot) {
+  bot = newBot;
 }
 
 // =====================
@@ -85,86 +90,70 @@ async function getSessionState(chatId) {
 // =====================
 // Message Handling (Forwarding & Replying)
 // =====================
+// Core message processing function (extracted for testing)
+async function processIncomingMessage(msg) {
+  const chatId = msg.chat.id;
+  const text = msg.text || "";
+
+  console.log(`📬 Message from ${chatId}: "${(text || '').toString().substring(0, 50)}..."`);
+
+  try {
+    if (text && text.startsWith('/start')) return;
+
+    if (chatId !== adminId) {
+      try {
+        await bot.forwardMessage(adminId, chatId, msg.message_id);
+        await bot.sendMessage(adminId, `🆔 User ID: \`${chatId}\` (Reply to the message above to chat)`);
+        await updateSessionState(chatId, "AWAITING_ADMIN_RESPONSE", null, text);
+      } catch (err) {
+        console.error("❌ Forwarding to admin failed:", err.message);
+        try {
+          await bot.sendMessage(chatId, "⚠️ Failed to send your message to support. Please try again.");
+        } catch (sendErr) {
+          console.error("❌ Could not notify user of forwarding failure:", sendErr.message);
+        }
+      }
+    } else if (chatId === adminId && msg.reply_to_message) {
+      let targetUserChatId;
+
+      if (msg.reply_to_message.forward_from) {
+        targetUserChatId = msg.reply_to_message.forward_from.id;
+      } else if (msg.reply_to_message.text && msg.reply_to_message.text.includes('User ID:')) {
+        const match = msg.reply_to_message.text.match(/User ID: \`?(\d+)\`?/);
+        if (match) targetUserChatId = parseInt(match[1], 10);
+      }
+
+      if (targetUserChatId) {
+        try {
+          const session = await getSessionState(targetUserChatId);
+          await bot.sendMessage(targetUserChatId, text);
+          await bot.sendMessage(adminId, "✅ Reply sent to user.");
+          await updateSessionState(targetUserChatId, "IDLE");
+        } catch (err) {
+          console.error(`❌ Failed to send reply to ${targetUserChatId}:`, err.message);
+          try {
+            await bot.sendMessage(adminId, `❌ Failed to send: ${err.message}`);
+          } catch (notifyErr) {
+            console.error("❌ Could not notify admin of failure:", notifyErr.message);
+          }
+        }
+      } else {
+        try {
+          await bot.sendMessage(adminId, "⚠️ Could not extract User ID from message. Please ensure you're replying to a forwarded customer message.");
+        } catch (notifyErr) {
+          console.error("❌ Could not notify admin:", notifyErr.message);
+        }
+        console.warn("⚠️ Admin reply failed: No valid targetUserChatId extracted from:", msg.reply_to_message);
+      }
+    }
+  } catch (err) {
+    console.error("❌ UNEXPECTED ERROR in message handler:", err.message, err.stack);
+  }
+}
+
 if (bot) {
   bot.on('message', async (msg) => {
-    const chatId = msg.chat.id;
-    const text = msg.text || "";
-
-    console.log(`📬 Message from ${chatId}: "${text.substring(0, 50)}..."`);
-
-    try {
-      // 1. Ignore /start commands as they are handled by bot.onText below
-      if (text && text.startsWith('/start')) return;
-
-      // 2. IF MESSAGE IS FROM A USER -> FORWARD TO ADMIN
-      if (chatId !== adminId) {
-        try {
-          // Forward the original message so Admin can see context
-          await bot.forwardMessage(adminId, chatId, msg.message_id);
-          
-          // Fallback: Send a small text block with the ID in case Admin needs to reply manually 
-          // or if the user's privacy settings hide their "forward_from" info.
-          await bot.sendMessage(adminId, `🆔 User ID: \`${chatId}\` (Reply to the message above to chat)`);
-          
-          // ✅ Mark session as awaiting admin response
-          await updateSessionState(chatId, "AWAITING_ADMIN_RESPONSE", null, text);
-        } catch (err) {
-          console.error("❌ Forwarding to admin failed:", err.message);
-          // Notify user that forwarding failed
-          try {
-            await bot.sendMessage(chatId, "⚠️ Failed to send your message to support. Please try again.");
-          } catch (sendErr) {
-            console.error("❌ Could not notify user of forwarding failure:", sendErr.message);
-          }
-        }
-      }
-
-      // 3. IF MESSAGE IS FROM ADMIN -> CHECK IF REPLIED TO A FORWARD
-      else if (chatId === adminId && msg.reply_to_message) {
-        let targetUserChatId;
-
-        // Check if it's a direct forward
-        if (msg.reply_to_message.forward_from) {
-          targetUserChatId = msg.reply_to_message.forward_from.id;
-        } 
-        // If privacy settings hide 'forward_from', try to extract ID from our fallback text
-        else if (msg.reply_to_message.text && msg.reply_to_message.text.includes('User ID:')) {
-          const match = msg.reply_to_message.text.match(/User ID: \`?(\d+)\`?/);
-          if (match) targetUserChatId = parseInt(match[1], 10);
-        }
-
-        if (targetUserChatId) {
-          try {
-            // ✅ Verify the user exists and is active before sending
-            const session = await getSessionState(targetUserChatId);
-            
-            await bot.sendMessage(targetUserChatId, text);
-            await bot.sendMessage(adminId, "✅ Reply sent to user.");
-            
-            // Update target user's session
-            await updateSessionState(targetUserChatId, "IDLE");
-          } catch (err) {
-            console.error(`❌ Failed to send reply to ${targetUserChatId}:`, err.message);
-            try {
-              await bot.sendMessage(adminId, `❌ Failed to send: ${err.message}`);
-            } catch (notifyErr) {
-              console.error("❌ Could not notify admin of failure:", notifyErr.message);
-            }
-          }
-        } else {
-          // Admin needs to know the reply failed to extract a user ID
-          try {
-            await bot.sendMessage(adminId, "⚠️ Could not extract User ID from message. Please ensure you're replying to a forwarded customer message.");
-          } catch (notifyErr) {
-            console.error("❌ Could not notify admin:", notifyErr.message);
-          }
-          console.warn("⚠️ Admin reply failed: No valid targetUserChatId extracted from:", msg.reply_to_message);
-        }
-      }
-    } catch (err) {
-      // OUTER error handler for unexpected crashes
-      console.error("❌ UNEXPECTED ERROR in message handler:", err.message, err.stack);
-    }
+    await processIncomingMessage(msg);
   });
 }
 
@@ -230,6 +219,8 @@ if (bot) {
 
 module.exports = {
   bot,
+  setBot,
+  processIncomingMessage,
   linkUserFromApi,
   sendMessageToUser,
   updateSessionState,
