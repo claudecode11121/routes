@@ -2,6 +2,20 @@ const { supabase } = require('../lib/supabase');
 
 const TABLE = 'temp_shipments';
 
+function normalizeTempShipmentRow(row) {
+  if (!row) return row;
+
+  return {
+    ...row,
+    tempId: row.tempId || row.temp_id || null,
+  };
+}
+
+function normalizeTempShipmentRows(rows) {
+  if (!rows) return rows;
+  return Array.isArray(rows) ? rows.map(normalizeTempShipmentRow) : normalizeTempShipmentRow(rows);
+}
+
 async function findByTempId(tempId) {
   const { data, error } = await supabase
     .from(TABLE)
@@ -9,7 +23,7 @@ async function findByTempId(tempId) {
     .eq('temp_id', tempId)
     .single();
   if (error && error.code !== 'PGRST116') throw error; // rethrow unless "no rows"
-  return data;
+  return normalizeTempShipmentRow(data);
 }
 
 async function findById(id) {
@@ -19,7 +33,7 @@ async function findById(id) {
     .eq('id', id)
     .single();
   if (error && error.code !== 'PGRST116') throw error;
-  return data;
+  return normalizeTempShipmentRow(data);
 }
 
 async function listAll({ limit = 100, order = 'desc' } = {}) {
@@ -29,7 +43,7 @@ async function listAll({ limit = 100, order = 'desc' } = {}) {
     .order('created_at', { ascending: order === 'asc' })
     .limit(limit);
   if (error) throw error;
-  return data;
+  return normalizeTempShipmentRows(data);
 }
 
 async function createShipment(payload) {
@@ -52,7 +66,7 @@ async function createShipment(payload) {
     .single();
 
   if (error) throw error;
-  return data;
+  return normalizeTempShipmentRow(data);
 }
 
 async function updateById(id, patch) {
@@ -63,7 +77,7 @@ async function updateById(id, patch) {
     .select()
     .single();
   if (error) throw error;
-  return data;
+  return normalizeTempShipmentRow(data);
 }
 
 async function updateByTempId(tempId, patch) {
@@ -74,7 +88,7 @@ async function updateByTempId(tempId, patch) {
     .select()
     .single();
   if (error) throw error;
-  return data;
+  return normalizeTempShipmentRow(data);
 }
 
 async function deleteById(id) {

@@ -3,6 +3,22 @@ const crypto = require('crypto');
 
 const TABLE = 'trackings';
 
+function normalizeTrackingRow(row) {
+  if (!row) return row;
+
+  return {
+    ...row,
+    trackingNumber: row.trackingNumber || row.tracking_number || null,
+    expectedDelivery: row.expectedDelivery || row.expected_delivery || null,
+    createdAt: row.createdAt || row.created_at || null,
+  };
+}
+
+function normalizeTrackingRows(rows) {
+  if (!rows) return rows;
+  return Array.isArray(rows) ? rows.map(normalizeTrackingRow) : normalizeTrackingRow(rows);
+}
+
 function generateTrackingNumber() {
   const num = Math.floor(100000000 + Math.random() * 900000000);
   return `CRJ-${num}`;
@@ -15,7 +31,7 @@ async function findByTrackingNumber(trackingNumber) {
     .eq('tracking_number', trackingNumber)
     .single();
   if (error && error.code !== 'PGRST116') throw error;
-  return data;
+  return normalizeTrackingRow(data);
 }
 
 async function findById(id) {
@@ -25,7 +41,7 @@ async function findById(id) {
     .eq('id', id)
     .single();
   if (error && error.code !== 'PGRST116') throw error;
-  return data;
+  return normalizeTrackingRow(data);
 }
 
 async function listAll({ limit = 100, order = 'desc' } = {}) {
@@ -35,7 +51,7 @@ async function listAll({ limit = 100, order = 'desc' } = {}) {
     .order('created_at', { ascending: order === 'asc' })
     .limit(limit);
   if (error) throw error;
-  return data;
+  return normalizeTrackingRows(data);
 }
 
 async function create(payload) {
@@ -69,7 +85,7 @@ async function create(payload) {
     .single();
 
   if (error) throw error;
-  return data;
+  return normalizeTrackingRow(data);
 }
 
 async function updateById(id, patch) {
@@ -80,7 +96,7 @@ async function updateById(id, patch) {
     .select()
     .single();
   if (error) throw error;
-  return data;
+  return normalizeTrackingRow(data);
 }
 
 async function updateByTrackingNumber(trackingNumber, patch) {
@@ -91,7 +107,7 @@ async function updateByTrackingNumber(trackingNumber, patch) {
     .select()
     .single();
   if (error) throw error;
-  return data;
+  return normalizeTrackingRow(data);
 }
 
 /**
@@ -123,7 +139,7 @@ async function updateStatus(trackingNumber, status, location) {
     .single();
 
   if (error) throw error;
-  return data;
+  return normalizeTrackingRow(data);
 }
 
 /**
@@ -137,7 +153,7 @@ async function updateExpectedDelivery(trackingNumber, expectedDelivery) {
     .select()
     .single();
   if (error) throw error;
-  return data;
+  return normalizeTrackingRow(data);
 }
 
 async function deleteById(id) {
