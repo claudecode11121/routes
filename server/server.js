@@ -50,7 +50,7 @@ app.use(
 // 3. AUTH & CONFIG VALIDATION
 // ==========================================
 const SECRET = process.env.SECRET;
-const BASE_URL = process.env.BASE_URL || "https://www.rapidroutesltd.com";
+const BASE_URL = process.env.BASE_URL || "https://rapidroutes-five.vercel.app";
 
 // Validate critical config at startup
 if (!SECRET) console.warn("⚠️ WARNING: SECRET not set in environment variables");
@@ -94,6 +94,7 @@ if (process.env.TELEGRAM_BOT_TOKEN && bot) {
     const webhookPath = `/api/telegram-webhook-secure`; 
     const webhookUrl = `${BASE_URL}${webhookPath}`;
     
+    console.log(`🔗 Registering Telegram webhook URL: ${webhookUrl}`);
     bot.setWebHook(webhookUrl)
       .then(() => {
         webhookSetSuccess = true;

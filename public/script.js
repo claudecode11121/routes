@@ -1,9 +1,7 @@
 const BASE_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:5000"
-    : window.location.hostname === "rapidroutesltd.com"
-    ? "https://rapidroutesltd.com"
-    : "https://consignment-site.vercel.app";
+    : "https://rapidroutes-five.vercel.app";
 
 // Override the default alert() to log instead of showing popup
 window.alert = function (message) {

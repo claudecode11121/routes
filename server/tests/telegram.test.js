@@ -149,7 +149,7 @@ console.log("✅ Error handling validation passed\n");
 console.log("✓ TEST 7: Configuration Validation");
 console.log("-".repeat(70));
 
-const baseUrl = process.env.BASE_URL || "https://www.rapidroutesltd.com";
+const baseUrl = process.env.BASE_URL || "https://rapidroutes-five.vercel.app";
 const webhookPath = "/api/telegram-webhook-secure";
 const webhookUrl = baseUrl + webhookPath;
 
