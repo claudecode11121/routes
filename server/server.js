@@ -110,13 +110,16 @@ if (process.env.TELEGRAM_BOT_TOKEN && bot) {
       console.log("🔔 TELEGRAM KNOCKING! Message:", JSON.stringify(req.body.message));
       
       try {
-        // Add 'await' so Vercel does not kill the server before the bot sends the message!
-        await bot.processUpdate(req.body); 
+        // Await bot processing to completion before responding
+        // This prevents Vercel Lambda from freezing mid-execution
+        await bot.processUpdate(req.body);
+        console.log("✅ Update processed successfully");
       } catch (error) {
-        console.error("Bot Error:", error);
+        console.error("❌ Bot processing error:", error.message);
+        // Don't rethrow — we always return 200 to Telegram to prevent retry spam
       }
       
-      // ONLY send 200 after the bot has fully finished talking
+      // Send 200 ONLY after bot has fully completed all message sends
       res.sendStatus(200);
     });
   }
