@@ -36,6 +36,20 @@ async function linkUserFromApi(tempId, chatId, username) {
   try {
     const user = await TelegramUser.createOrLinkUser(chatId, username, tempId);
     console.log(`✅ TelegramUser linked: ${tempId} → ${chatId}`);
+
+    // Mark the session as active as soon as the link is created.
+    await updateSessionState(chatId, "IDLE", tempId);
+
+    // Send the customer a proactive welcome message without blocking linking.
+    if (bot) {
+      bot.sendMessage(
+        chatId,
+        `Hello ${username}! Your shipment request (${tempId}) has been received. You can reply directly to this message to chat with our support team regarding your parcel.`
+      ).catch((err) => {
+        console.error("❌ Failed to send proactive welcome message:", err.message);
+      });
+    }
+
     return user;
   } catch (err) {
     console.error("❌ Database error in linkUserFromApi:", err.message);
@@ -180,18 +194,6 @@ if (bot) {
 
       // Link the user (creates DB entry)
       await linkUserFromApi(tempId, chatId, username);
-
-    // ✅ Initialize session state
-    await updateSessionState(chatId, "IDLE", tempId);
-
-    try {
-      await bot.sendMessage(chatId,
-        `👋 Hi ${username}! We've successfully linked your Telegram.\n\n` +
-        `Our team will reach out to you here regarding your parcel (Tracking ID: ${tempId}).`
-      );
-    } catch (err) {
-      console.error("❌ Failed to send welcome message to user:", err.message);
-    }
 
     try {
       await bot.sendMessage(adminId,
