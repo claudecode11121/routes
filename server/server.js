@@ -108,6 +108,7 @@ if (process.env.TELEGRAM_BOT_TOKEN && bot) {
     // Catch the messages using the clean path
     app.post(webhookPath, async (req, res) => {
       console.log("🔔 TELEGRAM KNOCKING! Message:", JSON.stringify(req.body.message));
+      console.log("🔔 Raw Webhook Payload:", JSON.stringify(req.body));
       
       try {
         // Await bot processing to completion before responding

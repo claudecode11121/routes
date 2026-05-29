@@ -172,6 +172,7 @@ async function processIncomingMessage(msg) {
 // =====================
 if (bot) {
   bot.on('message', async (msg) => {
+    console.log("📥 Bot listener caught a message:", JSON.stringify(msg));
     const chatId = msg.chat.id;
     const text = msg.text || "";
 
