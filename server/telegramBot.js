@@ -42,12 +42,17 @@ async function linkUserFromApi(tempId, chatId, username) {
 
     // Send the customer a proactive welcome message without blocking linking.
     if (bot) {
-      bot.sendMessage(
-        chatId,
-        `Hello ${username}! Your shipment request (${tempId}) has been received. You can reply directly to this message to chat with our support team regarding your parcel.`
-      ).catch((err) => {
-        console.error("❌ Failed to send proactive welcome message:", err.message);
-      });
+      bot
+        .sendMessage(
+          chatId,
+          `Hello ${username}! Your shipment request (${tempId}) has been received. You can reply directly to this message to chat with our support team regarding your parcel.`
+        )
+        .then(() => {
+          console.log('📨 Proactive welcome successfully sent to', chatId);
+        })
+        .catch((err) => {
+          console.error("❌ Failed to send proactive welcome message:", err.message);
+        });
     }
 
     return user;
@@ -117,6 +122,7 @@ async function processIncomingMessage(msg) {
     if (chatId !== adminId) {
       try {
         await bot.forwardMessage(adminId, chatId, msg.message_id);
+        console.log('✅ User message successfully forwarded to admin');
         await bot.sendMessage(adminId, `🆔 User ID: \`${chatId}\` (Reply to the message above to chat)`);
         await updateSessionState(chatId, "AWAITING_ADMIN_RESPONSE", null, text);
       } catch (err) {
