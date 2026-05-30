@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const path = require("path");
-const nodemailer = require("nodemailer");
+const { sendBrevoEmail } = require("./lib/email");
 const crypto = require("crypto");
 
 // Routes & Models
@@ -307,24 +307,21 @@ app.post("/api/admin/approve-shipment/:id", authMiddleware, async (req, res) => 
 
     res.json({ message: "Approved", trackingNumber: tracking.trackingNumber });
 
-    // Non-blocking email
+    // Send approval email via Brevo helper and await completion
     if (temp.receiver?.email) {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      transporter
-        .sendMail({
-          from: process.env.EMAIL_USER,
+      try {
+        const approvalHtml = `<p>Tracking: ${tracking.trackingNumber}</p>`;
+        await sendBrevoEmail({
           to: temp.receiver.email,
           subject: "Shipment Approved",
-          html: `<p>Tracking: ${tracking.trackingNumber}</p>`,
-        })
-        .catch(console.error);
+          html: approvalHtml,
+          senderEmail: process.env.BREVO_SENDER_EMAIL,
+          senderName: process.env.BREVO_SENDER_NAME,
+        });
+        console.log('✅ Approval email sent to', temp.receiver.email);
+      } catch (err) {
+        console.error('❌ Failed to send approval email:', err.response || err.message || err);
+      }
     }
 
     await TempShipment.deleteById(temp.id || temp._id);

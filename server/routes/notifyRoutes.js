@@ -1,8 +1,8 @@
 // server/routes/notifyRoutes.js
 const express = require("express");
 const router = express.Router();
-const axios = require("axios");
 require("dotenv").config();
+const { sendBrevoEmail } = require("../lib/email");
 
 // ---------------- POST /email ----------------
 router.post("/email", async (req, res) => {
@@ -20,12 +20,9 @@ router.post("/email", async (req, res) => {
       return res.status(500).json({ error: "Email service not configured" });
     }
 
-    const SENDER_EMAIL =
-      process.env.BREVO_SENDER_EMAIL || "support@rapidroute.com";
+    const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || "support@rapidroute.com";
 
-    const SENDER_NAME =
-      process.env.BREVO_SENDER_NAME || "Rapid Route Logistics";
-
+    const SENDER_NAME = process.env.BREVO_SENDER_NAME || "Rapid Route Logistics";
     const LOGO_URL = process.env.BREVO_LOGO_URL || "";
 
     // ---------------- Email HTML ----------------
@@ -90,25 +87,18 @@ router.post("/email", async (req, res) => {
       htmlContent,
     };
 
-    // ---------------- Send Email ----------------
-    const response = await axios.post(
-      "https://api.brevo.com/v3/smtp/email",
-      msg,
-      {
-        headers: {
-          accept: "application/json",
-          "api-key": BREVO_KEY,
-          "content-type": "application/json",
-        },
-      }
-    );
-
-    console.log("Brevo response:", response.data);
-
-    res.json({
-      success: true,
-      message: "Email sent successfully",
+    // ---------------- Send Email (via shared helper) ----------------
+    const brevoResponse = await sendBrevoEmail({
+      to: email,
+      subject: "Action Required: Complete Your Shipment Payment",
+      html: htmlContent,
+      senderEmail: SENDER_EMAIL,
+      senderName: SENDER_NAME,
     });
+
+    console.log("Brevo response:", brevoResponse);
+
+    res.json({ success: true, message: "Email sent successfully" });
 
   } catch (err) {
 
