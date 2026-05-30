@@ -2,6 +2,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const TelegramUser = require('./models/TelegramUser.supabase');
 const TempShipment = require('./models/TempShipment.supabase');
+const { sendBrevoEmail } = require('./lib/email');
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const adminId = parseInt(process.env.TELEGRAM_ADMIN_ID, 10);
@@ -49,7 +50,18 @@ async function linkUserFromApi(tempId, chatId, username) {
         );
         console.log('📨 Proactive welcome successfully sent to', chatId);
       } catch (err) {
-        console.error("❌ Failed to send proactive welcome message:", err.message);
+        console.error("❌ Failed to send proactive welcome message:", err);
+        // Fallback: notify admin by email that welcome to user failed
+        try {
+          await sendBrevoEmail({
+            to: process.env.BREVO_SENDER_EMAIL,
+            subject: `Telegram welcome failed for ${tempId}`,
+            html: `<p>Failed to send proactive welcome to <strong>${chatId}</strong> for tempId <strong>${tempId}</strong>.</p><pre>${JSON.stringify(err, Object.getOwnPropertyNames(err))}</pre>`
+          });
+          console.log('✉️ Fallback email sent to admin about welcome failure');
+        } catch (emailErr) {
+          console.error('❌ Failed to send fallback email about welcome failure:', emailErr);
+        }
       }
     }
 
@@ -122,11 +134,23 @@ async function processIncomingMessage(msg) {
         await bot.sendMessage(adminId, `🆔 User ID: \`${chatId}\` (Reply to the message above to chat)`);
         await updateSessionState(chatId, "AWAITING_ADMIN_RESPONSE", null, text);
       } catch (err) {
-        console.error("❌ Forwarding to admin failed:", err.message);
+        console.error("❌ Forwarding to admin failed:", err);
+        // Attempt to inform admin via email with message contents
+        try {
+          await sendBrevoEmail({
+            to: process.env.BREVO_SENDER_EMAIL,
+            subject: `Failed Telegram forward from ${chatId}`,
+            html: `<p>Failed to forward message from <strong>${chatId}</strong> to admin.</p><pre>${JSON.stringify(msg, null, 2)}</pre>`
+          });
+          console.log('✉️ Fallback email sent to admin about forwarding failure');
+        } catch (emailErr) {
+          console.error('❌ Failed to send fallback email about forwarding failure:', emailErr);
+        }
+
         try {
           await bot.sendMessage(chatId, "⚠️ Failed to send your message to support. Please try again.");
         } catch (sendErr) {
-          console.error("❌ Could not notify user of forwarding failure:", sendErr.message);
+          console.error("❌ Could not notify user of forwarding failure:", sendErr);
         }
       }
     } else if (chatId === adminId && msg.reply_to_message) {
@@ -146,18 +170,18 @@ async function processIncomingMessage(msg) {
           await bot.sendMessage(adminId, "✅ Reply sent to user.");
           await updateSessionState(targetUserChatId, "IDLE");
         } catch (err) {
-          console.error(`❌ Failed to send reply to ${targetUserChatId}:`, err.message);
+          console.error(`❌ Failed to send reply to ${targetUserChatId}:`, err);
           try {
-            await bot.sendMessage(adminId, `❌ Failed to send: ${err.message}`);
+            await bot.sendMessage(adminId, `❌ Failed to send: ${err.message || err}`);
           } catch (notifyErr) {
-            console.error("❌ Could not notify admin of failure:", notifyErr.message);
+            console.error("❌ Could not notify admin of failure:", notifyErr);
           }
         }
       } else {
         try {
           await bot.sendMessage(adminId, "⚠️ Could not extract User ID from message. Please ensure you're replying to a forwarded customer message.");
         } catch (notifyErr) {
-          console.error("❌ Could not notify admin:", notifyErr.message);
+          console.error("❌ Could not notify admin:", notifyErr);
         }
         console.warn("⚠️ Admin reply failed: No valid targetUserChatId extracted from:", msg.reply_to_message);
       }
