@@ -35,6 +35,23 @@ header, footer {
   padding: 0;
 }
 
+/* Ensure logo displays correctly and is not cropped */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.logo {
+  display: block;
+  max-width: 160px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
 #navbar a {
   color: #fff;
   text-decoration: none;
@@ -312,6 +329,38 @@ h2 {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+}
+
+/* Delivery movement animation elements */
+.route-arrow {
+  position: relative;
+  min-width: 160px;
+}
+
+.route-arrow .progress-track {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 6px;
+  background: rgba(37,213,102,0.12);
+  transform: translateY(-50%);
+  border-radius: 6px;
+}
+
+.route-arrow .moving-truck {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 20px;
+  animation: drive 4s linear infinite;
+}
+
+@keyframes drive {
+  from { left: 0%; transform: translate(-50%, -50%); }
+  to { left: 100%; transform: translate(-50%, -50%); }
 }
 
 /* SECTIONS */

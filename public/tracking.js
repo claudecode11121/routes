@@ -178,7 +178,17 @@ resultBox.innerHTML = `
       <span class="route-point-value">${data.origin || "N/A"}</span>
     </div>
     <div class="route-arrow">
-      <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
+      <div class="progress-track" aria-hidden="true"></div>
+      <div class="moving-truck" aria-hidden="true">
+        <svg viewBox="0 0 64 32" width="36" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="8" width="38" height="12" rx="2" stroke="#1c3f6e" stroke-width="1.6" fill="#fff" />
+          <rect x="34" y="12" width="18" height="8" rx="1" stroke="#1c3f6e" stroke-width="1.2" fill="#25d366" />
+          <circle cx="14" cy="22" r="3" fill="#1c3f6e" />
+          <circle cx="46" cy="22" r="3" fill="#1c3f6e" />
+          <path d="M6 8 L10 4 L26 4 L30 8" stroke="#1c3f6e" stroke-width="1" fill="none" />
+        </svg>
+      </div>
+      <svg class="route-static" width="40" height="24" viewBox="0 0 40 24" fill="none" aria-hidden="true">
         <path d="M2 12 L38 12" stroke="#25d366" stroke-width="2" stroke-linecap="round"/>
         <path d="M32 6 L38 12 L32 18" stroke="#25d366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
