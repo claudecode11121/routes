@@ -326,41 +326,32 @@ h2 {
 }
 
 .route-arrow {
+  position: relative;
+  width: 100%;
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  justify-content: center;
+  min-height: 50px;
 }
 
-/* Delivery movement animation elements */
-.route-arrow {
-  position: relative;
-  min-width: 160px;
+.route-static {
+  width: 100%;
+  max-width: 150px; /* Keeps the line a reasonable size */
 }
 
-.route-arrow .progress-track {
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  top: 50%;
-  height: 6px;
-  background: rgba(37,213,102,0.12);
-  transform: translateY(-50%);
-  border-radius: 6px;
-}
-
-.route-arrow .moving-truck {
+.moving-truck {
   position: absolute;
   top: 50%;
-  left: 0%;
-  transform: translate(-50%, -50%);
-  width: 36px;
-  height: 20px;
-  animation: drive 4s linear infinite;
+  transform: translateY(-60%); /* Locks the truck directly onto the line */
+  left: 0;
+  animation: driveTruck 3s linear infinite;
 }
 
-@keyframes drive {
-  from { left: 0%; transform: translate(-50%, -50%); }
-  to { left: 100%; transform: translate(-50%, -50%); }
+@keyframes driveTruck {
+  0% { left: 10%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 80%; opacity: 0; }
 }
 
 /* SECTIONS */
@@ -732,6 +723,8 @@ h2 {
 
   <div class="container">
     <h2>Track Your Shipment</h2>
+
+    <img src="./img/51374.jpg" alt="Banner" style="width: 100%; max-height: 250px; object-fit: cover; display: block; margin-bottom:16px;" />
 
     <div id="trackingResult">Loading...</div>
 

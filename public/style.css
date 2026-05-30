@@ -128,3 +128,33 @@
         max-width: 500px;
       }
     }
+
+/* Route animation positioning (keeps truck aligned with static line) */
+.route-arrow {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+}
+
+.route-static {
+  width: 100%;
+  max-width: 150px; /* Keeps the line a reasonable size */
+}
+
+.moving-truck {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-60%); /* Locks the truck directly onto the line */
+  left: 0;
+  animation: driveTruck 3s linear infinite;
+}
+
+@keyframes driveTruck {
+  0% { left: 10%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 80%; opacity: 0; }
+}
