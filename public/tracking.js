@@ -34,120 +34,234 @@ async function loadTrackingInfo() {
 
       const sender = data.sender || {};
       const receiver = data.receiver || {};
-// Render HTML
+
+      // Helper function to get status color and icon
+      function getStatusStyle(status) {
+        const statusLower = (status || "Pending").toLowerCase();
+        const styles = {
+          pending: { color: "#9CA3AF", bgColor: "#F3F4F6", icon: "⏳" },
+          in_transit: { color: "#1c3f6e", bgColor: "#E3F2FD", icon: "🚚" },
+          "in transit": { color: "#1c3f6e", bgColor: "#E3F2FD", icon: "🚚" },
+          out_for_delivery: { color: "#FF9800", bgColor: "#FFF3E0", icon: "🔵" },
+          "out for delivery": { color: "#FF9800", bgColor: "#FFF3E0", icon: "🔵" },
+          delivered: { color: "#25d366", bgColor: "#E8F5E9", icon: "✓" },
+          delayed: { color: "#e74c3c", bgColor: "#FFEBEE", icon: "⚠" }
+        };
+        return styles[statusLower] || styles.pending;
+      }
+
+      const statusStyle = getStatusStyle(data.status);
+      const daysInTransit = data.createdAt ? Math.floor((Date.now() - new Date(data.createdAt)) / (1000 * 60 * 60 * 24)) : 0;
+
+// Render HTML with premium design
 resultBox.innerHTML = `
-  <!-- TRACKING INFO SECTION -->
-  <div class="section">
-    <h3>Tracking Information</h3>
-    <div class="table-wrapper">
-      <table class="info-table">
-        <tr>
-          <th>Tracking Number</th>
-          <td>${data.trackingNumber}</td>
-          <th>Status</th>
-          <td>${data.status || "Pending"}</td>
-        </tr>
-        <tr>
-          <th>Created At</th>
-          <td>${data.createdAt ? new Date(data.createdAt).toLocaleString() : "Unknown"}</td>
-          <th>Expected Delivery</th>
-          <td>${data.expectedDelivery ? new Date(data.expectedDelivery).toLocaleDateString() : "Not set"}</td>
-        </tr>
-        <tr>
-          <th>Current Location</th>
-          <td colspan="3">${data.location || "Not Available"}</td>
-        </tr>
-      </table>
+  <!-- STATUS HIGHLIGHT CARD -->
+  <div class="status-card" style="background-color: ${statusStyle.bgColor}; border-left: 5px solid ${statusStyle.color};">
+    <div class="status-header">
+      <div class="tracking-number-large">
+        <span class="label">Tracking Number</span>
+        <span class="number">${data.trackingNumber}</span>
+      </div>
+      <div class="status-badge" style="background-color: ${statusStyle.color};">
+        <span class="status-text">${data.status || "Pending"}</span>
+      </div>
     </div>
   </div>
 
-  <!-- SHIPMENT DETAILS SECTION -->
-  <div class="section">
-    <h3>Shipment Details</h3>
-    <div class="table-wrapper">
-      <table class="info-table">
-        <tr>
-          <th colspan="2">Sender Information</th>
-          <th colspan="2">Receiver Information</th>
-        </tr>
-        <tr>
-          <th>Sender Name</th>
-          <td>${sender.name || "N/A"}</td>
-          <th>Receiver Name</th>
-          <td>${receiver.name || "N/A"}</td>
-        </tr>
-        <tr>
-          <th>Origin</th>
-          <td>${data.origin || "N/A"}</td>
-          <th>Destination</th>
-          <td>${data.destination || "N/A"}</td>
-        </tr>
-        <tr>
-          <th>Email</th>
-          <td>${sender.email || "N/A"}</td>
-          <th>Email</th>
-          <td>${receiver.email || "N/A"}</td>
-        </tr>
-        <tr>
-          <th>Phone</th>
-          <td>${sender.phone || "N/A"}</td>
-          <th>Phone</th>
-          <td>${receiver.phone || "N/A"}</td>
-        </tr>
-      </table>
+  <!-- KEY METRICS CARDS -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c3f6e" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">Days in Transit</span>
+        <span class="metric-value">${daysInTransit}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c3f6e" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">Est. Delivery</span>
+        <span class="metric-value">${data.expectedDelivery ? new Date(data.expectedDelivery).toLocaleDateString() : "Not set"}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c3f6e" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">Current Location</span>
+        <span class="metric-value">${data.location || "Not Available"}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SENDER / RECEIVER INFO CARDS -->
+  <div class="info-cards-grid">
+    <div class="info-card">
+      <div class="card-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c3f6e" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <h3>Sender</h3>
+      </div>
+      <div class="card-content">
+        <div class="info-row">
+          <span class="info-label">Name</span>
+          <span class="info-value">${sender.name || "N/A"}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value">${sender.email || "N/A"}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <span class="info-value">${sender.phone || "N/A"}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Address</span>
+          <span class="info-value">${sender.address || "N/A"}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="card-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <h3>Receiver</h3>
+      </div>
+      <div class="card-content">
+        <div class="info-row">
+          <span class="info-label">Name</span>
+          <span class="info-value">${receiver.name || "N/A"}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value">${receiver.email || "N/A"}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <span class="info-value">${receiver.phone || "N/A"}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Address</span>
+          <span class="info-value">${receiver.address || "N/A"}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUTE SUMMARY -->
+  <div class="route-summary">
+    <div class="route-point">
+      <span class="route-point-label">From</span>
+      <span class="route-point-value">${data.origin || "N/A"}</span>
+    </div>
+    <div class="route-arrow">
+      <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
+        <path d="M2 12 L38 12" stroke="#25d366" stroke-width="2" stroke-linecap="round"/>
+        <path d="M32 6 L38 12 L32 18" stroke="#25d366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="route-point">
+      <span class="route-point-label">To</span>
+      <span class="route-point-value">${data.destination || "N/A"}</span>
     </div>
   </div>
 
   <!-- ITEMS SECTION -->
   <div class="section">
-    <h3>📦 Items in Shipment</h3>
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; margin-right: 8px; vertical-align: middle;">
+        <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>
+      Items in Shipment
+    </h3>
     ${
       items.length > 0
-        ? `<div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Item ID</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Weight (kg)</th>
-                  <th>Quantity</th>
-                  <th>Cost</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${items.map(it => `
-                  <tr>
-                    <td>${it.itemId || "-"}</td>
-                    <td>${it.name || "-"}</td>
-                    <td>${it.description || "-"}</td>
-                    <td>${it.weight || "-"}</td>
-                    <td>${it.quantity || 1}</td>
-                    <td>${it.cost || 1}</td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
+        ? `<div class="items-grid">
+            ${items.map(it => `
+              <div class="item-card">
+                <div class="item-header">
+                  <span class="item-name">${it.name || "-"}</span>
+                  <span class="item-qty">Qty: ${it.quantity || 1}</span>
+                </div>
+                <div class="item-details">
+                  <div class="detail-row">
+                    <span class="detail-label">Description</span>
+                    <span class="detail-value">${it.description || "-"}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Weight</span>
+                    <span class="detail-value">${it.weight || "-"} kg</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Cost</span>
+                    <span class="detail-value">$${it.cost || 0}</span>
+                  </div>
+                </div>
+              </div>
+            `).join("")}
           </div>`
         : "<p>No items listed for this parcel.</p>"
     }
   </div>
 
-
-
-        <div class="section">
-          <h3>📜 Tracking History</h3>
-          ${
-            updates.length > 0
-              ? `<ul>${updates.map(u => `
-                  <li>
-                    <strong>${u.timestamp ? new Date(u.timestamp).toLocaleString() : "Unknown Date"}</strong><br>
-                    ${u.location || "Unknown Location"} — ${u.status || "No Status"}
-                  </li>
-                `).join("")}</ul>`
-              : "<p>No tracking history yet.</p>"
-          }
-        </div>
+  <!-- TRACKING HISTORY TIMELINE -->
+  <div class="section">
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; margin-right: 8px; vertical-align: middle;">
+        <circle cx="12" cy="12" r="1"></circle>
+        <path d="M12 1v6m0 6v4"></path>
+        <path d="M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24"></path>
+        <path d="M1 12h6m6 0h4"></path>
+        <path d="M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"></path>
+      </svg>
+      Tracking History
+    </h3>
+    ${
+      updates.length > 0
+        ? `<div class="timeline">
+            ${updates.map((u, idx) => `
+              <div class="timeline-item">
+                <div class="timeline-marker">
+                  <div class="timeline-dot"></div>
+                  ${idx < updates.length - 1 ? '<div class="timeline-line"></div>' : ''}
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-time">${u.timestamp ? new Date(u.timestamp).toLocaleString() : "Unknown Date"}</div>
+                  <div class="timeline-location">${u.location || "Unknown Location"}</div>
+                  <div class="timeline-status">${u.status || "No Status"}</div>
+                </div>
+              </div>
+            `).join("")}
+          </div>`
+        : "<p>No tracking history yet.</p>"
+    }
+  </div>
       `;
 
         // ✅ NEW LINE HERE — triggers your route update in tracking.html
