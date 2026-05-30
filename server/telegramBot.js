@@ -202,7 +202,7 @@ async function processIncomingMessage(msg) {
       if (targetUserChatId) {
         try {
           await getSessionState(targetUserChatId);
-          await bot.sendMessage(targetUserChatId, text);
+          await bot.copyMessage(targetUserChatId, adminId, msg.message_id);
           await bot.sendMessage(adminId, "✅ Reply sent to user.");
           await updateSessionState(targetUserChatId, "IDLE");
         } catch (err) {
