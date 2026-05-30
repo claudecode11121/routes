@@ -13,7 +13,7 @@ const telegramNotify = require("./routes/telegramNotify"); // Telegram notificat
 const Tracking = require("./models/Tracking.supabase");
 const Admin = require("./models/Admin.supabase");
 const TempShipment = require("./models/TempShipment.supabase");
-const { bot } = require("./telegramBot");
+const { bot, processIncomingMessage } = require("./telegramBot");
 
 const app = express();
 
@@ -109,18 +109,19 @@ if (process.env.TELEGRAM_BOT_TOKEN && bot) {
     app.post(webhookPath, async (req, res) => {
       console.log("🔔 TELEGRAM KNOCKING! Message:", JSON.stringify(req.body.message));
       console.log("🔔 Raw Webhook Payload:", JSON.stringify(req.body));
-      
+
       try {
-        // Await bot processing to completion before responding
-        // This prevents Vercel Lambda from freezing mid-execution
-        await bot.processUpdate(req.body);
+        const message = req.body?.message;
+        if (message) {
+          await processIncomingMessage(message);
+        } else {
+          console.log("ℹ️ Webhook payload did not include a message object");
+        }
         console.log("✅ Update processed successfully");
       } catch (error) {
         console.error("❌ Bot processing error:", error.message);
-        // Don't rethrow — we always return 200 to Telegram to prevent retry spam
       }
-      
-      // Send 200 ONLY after bot has fully completed all message sends
+
       res.sendStatus(200);
     });
   }

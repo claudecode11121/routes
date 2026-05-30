@@ -119,14 +119,51 @@ async function getSessionState(chatId) {
 // =====================
 // Message Handling (Forwarding & Replying)
 // =====================
-// Core message processing function (extracted for testing)
+// Core message processing function (extracted for testing and webhook execution)
 async function processIncomingMessage(msg) {
+  if (!msg || !msg.chat) {
+    console.warn("⚠️ Ignoring malformed Telegram message:", JSON.stringify(msg));
+    return;
+  }
+
   const chatId = msg.chat.id;
   const text = msg.text || "";
 
   console.log(`📬 Message from ${chatId}: "${(text || '').toString().substring(0, 50)}..."`);
 
   try {
+    if (text && text.startsWith('/start')) {
+      const match = text.match(/^\/start(?:\s+(.+))?/);
+      const tempId = match ? match[1] : null;
+      const username = msg.from?.username ? `@${msg.from.username}` : msg.from?.first_name || "User";
+
+      console.log("🚀 /start triggered:", { chatId, tempId });
+
+      if (!tempId) {
+        try {
+          await bot.sendMessage(chatId, "👋 Welcome to Rapid Routes! Please use your specific shipment link to get started.");
+        } catch (err) {
+          console.error("❌ Failed to send welcome message:", err.message);
+        }
+        return;
+      }
+
+      await linkUserFromApi(tempId, chatId, username);
+
+      try {
+        await bot.sendMessage(adminId,
+          `🔗 User Linked via Telegram
+━━━━━━━━━━━━━━━
+🆔 Temp ID: ${tempId}
+👤 Username: ${username}
+💬 Chat ID: ${chatId}`
+        );
+      } catch (err) {
+        console.error("❌ Failed to notify admin of new user:", err.message);
+      }
+      return;
+    }
+
     if (chatId !== adminId) {
       try {
         await bot.forwardMessage(adminId, chatId, msg.message_id);
@@ -135,7 +172,6 @@ async function processIncomingMessage(msg) {
         await updateSessionState(chatId, "AWAITING_ADMIN_RESPONSE", null, text);
       } catch (err) {
         console.error("❌ Forwarding to admin failed:", err);
-        // Attempt to inform admin via email with message contents
         try {
           await sendBrevoEmail({
             to: process.env.BREVO_SENDER_EMAIL,
@@ -165,7 +201,7 @@ async function processIncomingMessage(msg) {
 
       if (targetUserChatId) {
         try {
-          const session = await getSessionState(targetUserChatId);
+          await getSessionState(targetUserChatId);
           await bot.sendMessage(targetUserChatId, text);
           await bot.sendMessage(adminId, "✅ Reply sent to user.");
           await updateSessionState(targetUserChatId, "IDLE");
@@ -189,59 +225,6 @@ async function processIncomingMessage(msg) {
   } catch (err) {
     console.error("❌ UNEXPECTED ERROR in message handler:", err.message, err.stack);
   }
-}
-
-// =====================
-// Unified Message Router
-// =====================
-if (bot) {
-  bot.on('message', async (msg) => {
-    console.log("📥 Bot listener caught a message:", JSON.stringify(msg));
-    const chatId = msg.chat.id;
-    const text = msg.text || "";
-
-    try {
-      // Check if this is a /start command (handle it specially)
-      if (text && text.startsWith('/start')) {
-        const match = text.match(/^\/start(?:\s+(.+))?/);
-        const tempId = match ? match[1] : null;
-        const username = msg.from.username ? `@${msg.from.username}` : msg.from.first_name || "User";
-
-        console.log("🚀 /start triggered:", { chatId, tempId });
-
-        if (!tempId) {
-          try {
-            await bot.sendMessage(chatId, "👋 Welcome to Rapid Routes! Please use your specific shipment link to get started.");
-          } catch (err) {
-            console.error("❌ Failed to send welcome message:", err.message);
-          }
-          return;
-        }
-
-        // Link the user (creates DB entry) and send proactive welcome
-        await linkUserFromApi(tempId, chatId, username);
-
-        // Notify admin of new user link
-        try {
-          await bot.sendMessage(adminId,
-            `🔗 User Linked via Telegram
-━━━━━━━━━━━━━━━
-🆔 Temp ID: ${tempId}
-👤 Username: ${username}
-💬 Chat ID: ${chatId}`
-          );
-        } catch (err) {
-          console.error("❌ Failed to notify admin of new user:", err.message);
-        }
-        return;
-      }
-
-      // Not a /start command - process as regular message (forward to admin, reply logic, etc.)
-      await processIncomingMessage(msg);
-    } catch (err) {
-      console.error("❌ Unified message handler error:", err.message, err.stack);
-    }
-  });
 }
 
 module.exports = {
