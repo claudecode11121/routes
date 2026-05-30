@@ -20,7 +20,7 @@ const app = express();
 // ==========================================
 // 1. GLOBAL MIDDLEWARE
 // ==========================================
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 
 const allowedOrigins = [
   "http://localhost:5000",
@@ -97,7 +97,11 @@ if (process.env.TELEGRAM_BOT_TOKEN && bot) {
     console.log(`🔗 Registering Telegram webhook URL: ${webhookUrl}`);
     (async () => {
       try {
-        await bot.setWebHook(webhookUrl);
+        // Set webhook with secret token if TELEGRAM_SECRET_TOKEN is configured
+        const webhookOptions = process.env.TELEGRAM_SECRET_TOKEN 
+          ? { secret_token: process.env.TELEGRAM_SECRET_TOKEN }
+          : {};
+        await bot.setWebHook(webhookUrl, undefined, webhookOptions);
         webhookSetSuccess = true;
         console.log(`✅ Telegram Webhook successfully set to: ${webhookUrl}`);
       } catch (err) {
@@ -107,8 +111,14 @@ if (process.env.TELEGRAM_BOT_TOKEN && bot) {
 
     // Catch the messages using the clean path
     app.post(webhookPath, async (req, res) => {
-      console.log("🔔 TELEGRAM KNOCKING! Message:", JSON.stringify(req.body.message));
-      console.log("🔔 Raw Webhook Payload:", JSON.stringify(req.body));
+      // Validate Telegram secret token to ensure webhook is legitimate
+      const secretToken = req.headers['x-telegram-bot-api-secret-token'];
+      if (!secretToken || secretToken !== process.env.TELEGRAM_SECRET_TOKEN) {
+        console.warn("⚠️ Unauthorized webhook access attempt (missing or invalid secret token)");
+        return res.status(403).json({ error: "Forbidden" });
+      }
+
+      console.log("🔔 Telegram webhook received");
 
       try {
         const message = req.body?.message;
