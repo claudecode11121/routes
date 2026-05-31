@@ -42,30 +42,32 @@ router.post("/email", async (req, res) => {
           <div style="padding:22px 24px;line-height:1.6;background:#ffffff;">
             <h2 style="margin:0 0 10px;font-size:20px;color:#1d173c;text-align:left;">Receiver Details Received</h2>
 
+
             <p style="margin:0 0 12px;font-size:15px;">Hello <strong>${name}</strong>,</p>
 
-            <p style="margin:0 0 14px;font-size:15px;">Thank you — we have received your receiver details for the shipment below. Please complete the payment step to allow us to process and dispatch your parcel.</p>
+            <p style="margin:0 0 10px;">We’ve successfully received your details linked to the shipment below:</p>
 
-            <div style="margin:14px 0;padding:14px 12px;border-left:6px solid #d84659;background:#fff;border:1px solid #ececec;">
-              <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:#d84659;font-weight:700;margin-bottom:6px;">Shipment Temporary ID</div>
-              <div style="font-size:18px;font-weight:700;color:#1d173c;word-break:break-word;">${tempId}</div>
-            </div>
+            <h3 style="color:#1d173c;text-align:center;margin:10px 0;font-size:16px;">${tempId}</h3>
 
-            <p style="margin:0 0 14px;font-size:15px;color:#444;">When payment is confirmed, your shipment will be scheduled for dispatch. You can complete payment using the link below or reply to this email for assistance.</p>
+            <p style="margin:0 0 10px;font-size:14px;">To complete your shipment process, please ensure that the required payment has been made. Once payment is confirmed, your parcel will be processed and scheduled for dispatch.</p>
+
+            <p style="margin:0 0 10px;font-size:14px;"><strong>Kindly reply directly to this email</strong> to confirm your payment or request payment instructions.</p>
+
+            <p style="margin:0 0 12px;font-size:14px;">If you’ve already made payment, kindly ignore this message.</p>
 
             <div style="text-align:center;margin:18px 0;">
               <a href="${receiverLink}" style="display:inline-block;background:#d84659;color:#fff;padding:10px 18px;text-decoration:none;font-weight:700;border-radius:4px;">Complete Payment</a>
             </div>
 
             <p style="margin:0 0 8px;font-size:14px;color:#555;">If you’ve already paid, please ignore this message or reply to let us know.</p>
-            <p style="margin:0;font-size:14px;color:#555;">Need help? Contact us at <a href="mailto:${SENDER_EMAIL}" style="color:#d84659;text-decoration:none;">${SENDER_EMAIL}</a></p>
+            <p style="margin:0;font-size:14px;color:#555;">Need help? Contact us at <a href="mailto:customerline@rapidroutes.com" style="color:#d84659;text-decoration:none;">customerline@rapidroutes.com</a></p>
           </div>
 
           <!-- Footer (site-style) -->
           <div style="background:#1d173c;color:#fff;padding:18px 20px;text-align:center;font-size:13px;">
             <div style="max-width:640px;margin:0 auto;">
               <div style="font-weight:600;margin-bottom:6px;">${SENDER_NAME}</div>
-              <div style="color:#c9c9d9;font-size:13px;line-height:1.6;">We are dedicated to providing fast, secure and reliable delivery solutions. For support, email <a href="mailto:${SENDER_EMAIL}" style="color:#fff;text-decoration:underline;">${SENDER_EMAIL}</a></div>
+              <div style="color:#c9c9d9;font-size:13px;line-height:1.6;">We are dedicated to providing fast, secure and reliable delivery solutions. For support, email <a href="mailto:customerline@rapidroutes.com" style="color:#fff;text-decoration:underline;">customerline@rapidroutes.com</a></div>
             </div>
           </div>
 
