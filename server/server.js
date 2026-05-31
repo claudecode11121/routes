@@ -322,30 +322,32 @@ app.post("/api/admin/approve-shipment/:id", authMiddleware, async (req, res) => 
         const senderName = process.env.BREVO_SENDER_NAME || "Rapid Route Logistics";
         const senderEmail = process.env.BREVO_SENDER_EMAIL || "support@rapidroute.com";
         const approvalHtml = `
-          <div style="margin:0;padding:0;background:#f6f8fa;font-family:Arial,sans-serif;">
-            <div style="max-width:640px;margin:0 auto;padding:24px;">
-              <div style="background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #e8edf3;box-shadow:0 6px 20px rgba(15,23,42,0.06);">
-                <div style="background:#0b5ed7;padding:20px 24px;text-align:center;">
-                  ${logoUrl ? `<img src="${logoUrl}" alt="${senderName} logo" style="max-width:180px;height:auto;display:block;margin:0 auto;" />` : `<div style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:0.4px;">${senderName}</div>`}
+          <div style="margin:0;padding:0;background:#f5f5f5;font-family:Poppins,Arial,sans-serif;color:#333;">
+            <div style="max-width:680px;margin:0 auto;padding:0;">
+              <div style="background:#ffffff;overflow:hidden;border:1px solid #ececec;box-shadow:0 4px 14px rgba(0,0,0,0.08);">
+                <div style="background:#1d173c;padding:22px 24px;text-align:center;">
+                  ${logoUrl ? `<img src="${logoUrl}" alt="${senderName} logo" style="max-width:220px;width:100%;height:auto;display:block;margin:0 auto;" />` : `<div style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:0.5px;">${senderName}</div>`}
                 </div>
 
-                <div style="padding:32px 28px;color:#1f2937;line-height:1.7;">
-                  <h2 style="margin:0 0 16px;font-size:24px;line-height:1.3;color:#0f172a;">Your shipment has been approved</h2>
-                  <p style="margin:0 0 16px;font-size:16px;">Hello,</p>
-                  <p style="margin:0 0 20px;font-size:16px;">Your parcel has been approved and your tracking number is now active.</p>
-
-                  <div style="margin:24px 0;padding:18px 20px;background:#eef4ff;border-left:5px solid #0b5ed7;border-radius:10px;">
-                    <div style="font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:#0b5ed7;font-weight:700;margin-bottom:6px;">Tracking Number</div>
-                    <div style="font-size:22px;font-weight:700;color:#0f172a;word-break:break-word;">${tracking.trackingNumber}</div>
+                <div style="padding:34px 30px;line-height:1.8;background:#ffffff;">
+                  <div style="text-align:center;margin-bottom:22px;">
+                    <div style="display:inline-block;background:#f15a24;color:#ffffff;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:8px 14px;border-radius:0;">Shipment Approved</div>
                   </div>
 
-                  <p style="margin:0 0 14px;font-size:16px;">Please keep this tracking number safe. You can use it to check the status of your shipment at any time.</p>
-                  <p style="margin:0;font-size:16px;">If you have any questions, reply to this email and our team will assist you.</p>
+                  <h2 style="margin:0 0 12px;font-size:20px;line-height:1.25;color:#333;text-align:center;">Your parcel is approved</h2>
+                  <p style="margin:0 0 14px;font-size:14px;color:#555;text-align:center;">Your shipment is ready and your tracking number has been assigned.</p>
+
+                  <div style="margin:20px 0;padding:18px 16px;background:#ffffff;border:1px solid #ececec;border-left:6px solid #f15a24;text-align:center;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#f15a24;font-weight:700;margin-bottom:6px;">Tracking Number</div>
+                    <div style="font-size:18px;font-weight:700;color:#1d173c;word-break:break-word;">${tracking.trackingNumber}</div>
+                  </div>
+
+                  <p style="margin:0 0 12px;font-size:14px;color:#555;">Please keep this tracking number safe. You can use it to check the status of your shipment at any time.</p>
+                  <p style="margin:0;font-size:14px;color:#555;">If you have any questions, reply to this email and our team will assist you.</p>
                 </div>
 
-                <div style="padding:18px 28px 26px;background:#f8fafc;border-top:1px solid #e8edf3;color:#64748b;font-size:13px;line-height:1.6;text-align:center;">
-                  <div>${senderName}</div>
-                  <div><a href="mailto:${senderEmail}" style="color:#0b5ed7;text-decoration:none;">${senderEmail}</a></div>
+                <div style="padding:18px 28px 24px;background:#1d173c;color:#c9c9d9;font-size:13px;line-height:1.7;text-align:center;">
+                  <div style="color:#ffffff;font-weight:600;margin-bottom:4px;">${senderName}</div>
                 </div>
               </div>
             </div>

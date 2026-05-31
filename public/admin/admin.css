@@ -12,7 +12,7 @@ header {
   color: white;
   padding: 15px 20px;
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.25em;
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -22,7 +22,6 @@ section {
   background: #fff;
   margin: 20px auto;
   padding: 20px;
-  border-radius: 10px;
   width: 95%;
   max-width: 1000px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -43,7 +42,6 @@ form {
 
 fieldset {
   border: 1px solid #ddd;
-  border-radius: 8px;
   padding: 15px;
 }
 
@@ -56,7 +54,6 @@ legend {
 input, select, button {
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 6px;
   font-size: 14px;
   width: 100%;
   box-sizing: border-box;
@@ -91,7 +88,6 @@ button:disabled {
 .table-wrapper {
   overflow-x: auto;
   margin-top: 15px;
-  border-radius: 10px;
   border: 1px solid #ddd;
 }
 
@@ -132,7 +128,6 @@ tr:hover {
   margin: 60px auto;
   padding: 25px;
   background: white;
-  border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
