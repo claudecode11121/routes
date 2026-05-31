@@ -233,20 +233,20 @@ async function processIncomingMessage(msg) {
       if (targetUserChatId) {
         try {
           await getSessionState(targetUserChatId);
-          await bot.copyMessage(targetUserChatId, adminId, msg.message_id);
-          await bot.sendMessage(adminId, "✅ Reply sent to user.");
+          await bot.copyMessage(targetUserChatId, chatId, msg.message_id);
+          await bot.sendMessage(chatId, "✅ Reply sent to user.");
           await updateSessionState(targetUserChatId, "IDLE");
         } catch (err) {
           console.error(`❌ Failed to send reply to ${targetUserChatId}:`, err);
           try {
-            await bot.sendMessage(adminId, `❌ Failed to send: ${err.message || err}`);
+            await bot.sendMessage(chatId, `❌ Failed to send: ${err.message || err}`);
           } catch (notifyErr) {
             console.error("❌ Could not notify admin of failure:", notifyErr);
           }
         }
       } else {
         try {
-          await bot.sendMessage(adminId, "⚠️ Could not extract User ID from message. Please ensure you're replying to a forwarded customer message.");
+          await bot.sendMessage(chatId, "⚠️ Could not extract User ID from message. Please ensure you're replying to a forwarded customer message.");
         } catch (notifyErr) {
           console.error("❌ Could not notify admin:", notifyErr);
         }

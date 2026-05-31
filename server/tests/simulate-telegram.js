@@ -11,6 +11,10 @@ const mockBot = {
   async sendMessage(targetId, text) {
     console.log(`[mockBot] sendMessage -> ${targetId}: ${text}`);
     return Promise.resolve();
+  },
+  async copyMessage(targetId, fromId, messageId) {
+    console.log(`[mockBot] copyMessage -> to:${targetId}, from:${fromId}, msgId:${messageId}`);
+    return Promise.resolve();
   }
 };
 
