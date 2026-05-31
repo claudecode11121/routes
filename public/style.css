@@ -129,6 +129,42 @@
       }
     }
 
+    /* ===== TRACKING HERO / OVERLAP LAYOUT ===== */
+    .hero-banner {
+      width: 100%;
+      height: 280px;
+      position: relative;
+    }
+
+    .hero-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .container {
+      margin-top: -100px;
+      position: relative;
+      z-index: 10;
+      background: #ffffff;
+    }
+
+    .metric-card,
+    .info-card,
+    .route-summary,
+    .section,
+    .item-card,
+    .timeline-content {
+      background: #ffffff !important;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .tracking-number-large .number {
+      font-family: ui-monospace, "Roboto Mono", SFMono-Regular, monospace;
+    }
+
 /* Route animation positioning (keeps truck aligned with static line) */
 .route-arrow {
   position: relative;
