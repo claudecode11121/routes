@@ -27,41 +27,41 @@ router.post("/email", async (req, res) => {
 
     // ---------------- Email HTML ----------------
     const htmlContent = `
-      <div style="font-family:Arial,sans-serif;background:#f6f8fa;padding:20px;">
-        <div style="max-width:600px;margin:auto;background:white;border-radius:10px;overflow:hidden;">
-          
-          <div style="background:#007bff;padding:15px;text-align:center;">
+      <div style="font-family:Arial,sans-serif;background:#f6f8fa;padding:12px;font-size:14px;color:#333;">
+        <div style="max-width:600px;margin:auto;background:white;overflow:hidden;border:1px solid #ececec;">
+
+          <div style="background:#007bff;padding:12px;text-align:center;">
             ${
               LOGO_URL
-                ? `<img src="${LOGO_URL}" alt="Rapid Route Logo" style="height:50px;" />`
+                ? `<img src="${LOGO_URL}" alt="Rapid Route Logo" style="height:44px;display:block;margin:0 auto;" />`
                 : ""
             }
           </div>
 
-          <div style="padding:25px;">
-            <h2 style="color:#007bff;">Receiver Details Received</h2>
+          <div style="padding:18px;">
+            <h2 style="color:#007bff;margin:0 0 10px;font-size:18px;">Receiver Details Received</h2>
 
-            <p>Hello <strong>${name}</strong>,</p>
+            <p style="margin:0 0 10px;">Hello <strong>${name}</strong>,</p>
 
-            <p>We’ve successfully received your details linked to the shipment below:</p>
+            <p style="margin:0 0 10px;">We’ve successfully received your details linked to the shipment below:</p>
 
-            <h3 style="color:#007bff;text-align:center;">${tempId}</h3>
+            <h3 style="color:#007bff;text-align:center;margin:10px 0;font-size:16px;">${tempId}</h3>
 
-            <p>
+            <p style="margin:0 0 10px;font-size:14px;">
               To complete your shipment process, please ensure that the required payment has been made.
               Once payment is confirmed, your parcel will be processed and scheduled for dispatch.
             </p>
 
-            <p>
+            <p style="margin:0 0 10px;font-size:14px;">
               <strong>Kindly reply directly to this email</strong> to confirm your payment
               or request payment instructions.
             </p>
 
-            <p>If you’ve already made payment, kindly ignore this message.</p>
+            <p style="margin:0 0 12px;font-size:14px;">If you’ve already made payment, kindly ignore this message.</p>
 
-            <hr style="margin:25px 0;border:none;border-top:1px solid #eee;">
+            <hr style="margin:18px 0;border:none;border-top:1px solid #eee;">
 
-            <p style="font-size:13px;color:#666;text-align:center;">
+            <p style="font-size:12px;color:#666;text-align:center;margin:0;">
               Need help? Contact us at
               <a href="mailto:${SENDER_EMAIL}" style="color:#007bff;text-decoration:none;">
                 ${SENDER_EMAIL}
