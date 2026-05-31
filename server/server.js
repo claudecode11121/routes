@@ -97,11 +97,8 @@ if (process.env.TELEGRAM_BOT_TOKEN && bot) {
     console.log(`🔗 Registering Telegram webhook URL: ${webhookUrl}`);
     (async () => {
       try {
-        // Set webhook with secret token if TELEGRAM_SECRET_TOKEN is configured
-        const webhookOptions = process.env.TELEGRAM_SECRET_TOKEN 
-          ? { secret_token: process.env.TELEGRAM_SECRET_TOKEN }
-          : {};
-        await bot.setWebHook(webhookUrl, undefined, webhookOptions);
+        // Register webhook with Telegram secret token in the expected options argument.
+        await bot.setWebHook(webhookUrl, { secret_token: process.env.TELEGRAM_SECRET_TOKEN });
         webhookSetSuccess = true;
         console.log(`✅ Telegram Webhook successfully set to: ${webhookUrl}`);
       } catch (err) {
