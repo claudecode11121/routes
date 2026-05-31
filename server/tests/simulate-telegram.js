@@ -29,6 +29,10 @@ tb.getSessionState = async (chatId) => {
   console.log(`[mock] getSessionState -> ${chatId}`);
   return { state: 'IDLE' };
 };
+tb.linkUserFromApi = async (tempId, chatId, username) => {
+  console.log(`[mock] linkUserFromApi -> tempId:${tempId}, chatId:${chatId}, username:${username}`);
+  return { id: chatId, temp_id: tempId };
+};
 
 async function run() {
   console.log('--- Simulate: user sends message (should forward to admin) ---');
@@ -59,6 +63,16 @@ async function run() {
   };
 
   await tb.processIncomingMessage(adminReplyFallback);
+
+  console.log('\n--- Simulate: user sends /start command (should notify all admins) ---');
+  const startMsg = {
+    chat: { id: 987654321 },
+    from: { username: 'TestUser123', first_name: 'Test' },
+    text: '/start TMP-USER-LINKTEST-001',
+    message_id: 444
+  };
+
+  await tb.processIncomingMessage(startMsg);
 
   console.log('\nSimulation complete');
 }
