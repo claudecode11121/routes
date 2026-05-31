@@ -5,7 +5,17 @@ const TempShipment = require('./models/TempShipment.supabase');
 const { sendBrevoEmail } = require('./lib/email');
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
-const adminId = parseInt(process.env.TELEGRAM_ADMIN_ID, 10);
+
+// Parse comma-separated admin IDs into an array of integers
+const adminIds = (process.env.TELEGRAM_ADMIN_IDS || '')
+  .split(',')
+  .map(id => parseInt(id.trim(), 10))
+  .filter(id => !isNaN(id));
+
+// Helper to check if a chat ID is an admin
+function isAdmin(chatId) {
+  return adminIds.includes(chatId);
+}
 
 // ✅ Validate token before creating bot
 if (!token) {
@@ -151,32 +161,53 @@ async function processIncomingMessage(msg) {
       await linkUserFromApi(tempId, chatId, username);
 
       try {
-        await bot.sendMessage(adminId,
-          `🔗 User Linked via Telegram
+        const notificationMsg = `🔗 User Linked via Telegram
 ━━━━━━━━━━━━━━━
 🆔 Temp ID: ${tempId}
 👤 Username: ${username}
-💬 Chat ID: ${chatId}`
-        );
+💬 Chat ID: ${chatId}`;
+        
+        for (const adminId of adminIds) {
+          try {
+            await bot.sendMessage(adminId, notificationMsg);
+          } catch (err) {
+            console.error(`❌ Failed to notify admin ${adminId} of new user:`, err.message);
+          }
+        }
       } catch (err) {
-        console.error("❌ Failed to notify admin of new user:", err.message);
+        console.error("❌ Failed to notify admins of new user:", err.message);
       }
       return;
     }
 
-    if (chatId !== adminId) {
+    if (!isAdmin(chatId)) {
       try {
-        await bot.forwardMessage(adminId, chatId, msg.message_id);
-        console.log('✅ User message successfully forwarded to admin');
-        await bot.sendMessage(adminId, `🆔 User ID: \`${chatId}\` (Reply to the message above to chat)`);
-        await updateSessionState(chatId, "AWAITING_ADMIN_RESPONSE", null, text);
+        const userIdNotice = `🆔 User ID: \`${chatId}\` (Reply to the message above to chat)`;
+        let forwardedSuccessfully = false;
+        
+        for (const adminId of adminIds) {
+          try {
+            await bot.forwardMessage(adminId, chatId, msg.message_id);
+            await bot.sendMessage(adminId, userIdNotice);
+            forwardedSuccessfully = true;
+          } catch (err) {
+            console.error(`❌ Forwarding to admin ${adminId} failed:`, err.message);
+          }
+        }
+        
+        if (forwardedSuccessfully) {
+          console.log('✅ User message successfully forwarded to admins');
+          await updateSessionState(chatId, "AWAITING_ADMIN_RESPONSE", null, text);
+        } else {
+          throw new Error('Failed to forward to any admin');
+        }
       } catch (err) {
-        console.error("❌ Forwarding to admin failed:", err);
+        console.error("❌ Forwarding to admins failed:", err);
         try {
           await sendBrevoEmail({
             to: process.env.BREVO_SENDER_EMAIL,
             subject: `Failed Telegram forward from ${chatId}`,
-            html: `<p>Failed to forward message from <strong>${chatId}</strong> to admin.</p><pre>${JSON.stringify(msg, null, 2)}</pre>`
+            html: `<p>Failed to forward message from <strong>${chatId}</strong> to admins.</p><pre>${JSON.stringify(msg, null, 2)}</pre>`
           });
           console.log('✉️ Fallback email sent to admin about forwarding failure');
         } catch (emailErr) {
@@ -189,7 +220,7 @@ async function processIncomingMessage(msg) {
           console.error("❌ Could not notify user of forwarding failure:", sendErr);
         }
       }
-    } else if (chatId === adminId && msg.reply_to_message) {
+    } else if (isAdmin(chatId) && msg.reply_to_message) {
       let targetUserChatId;
 
       if (msg.reply_to_message.forward_from) {

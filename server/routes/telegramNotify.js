@@ -2,7 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { bot } = require("../telegramBot");
 
-const adminId = parseInt(process.env.TELEGRAM_ADMIN_ID, 10);
+// Parse comma-separated admin IDs into an array of integers
+const adminIds = (process.env.TELEGRAM_ADMIN_IDS || '')
+  .split(',')
+  .map(id => parseInt(id.trim(), 10))
+  .filter(id => !isNaN(id));
 
 router.post("/telegram", async (req, res) => {
   try {
@@ -25,8 +29,14 @@ router.post("/telegram", async (req, res) => {
 🏠 Address: ${address || "N/A"}
 🆔 Temp ID: ${tempId}`;
 
-    await bot.sendMessage(adminId, msgToAdmin);
-    console.log("✅ Message successfully sent to admin");
+    for (const adminId of adminIds) {
+      try {
+        await bot.sendMessage(adminId, msgToAdmin);
+      } catch (err) {
+        console.error(`❌ Failed to send message to admin ${adminId}:`, err.message);
+      }
+    }
+    console.log("✅ Message successfully sent to all admins");
 
     // Note: We no longer try to message the receiver here. 
     // They will get their welcome message automatically via telegramBot.js 
